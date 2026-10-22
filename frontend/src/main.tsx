@@ -23,6 +23,13 @@ import {
 } from "lucide-react";
 import "./styles.css";
 import { Intro } from "./Intro";
+import {
+  EvidenceScene,
+  FacilityRoute,
+  SceneThumb,
+  SectorBanner,
+} from "./Investigation";
+import { chapterZones, getScene, zones } from "./story";
 type Doc = {
   id: string;
   title: string;
@@ -130,6 +137,7 @@ function App() {
         .catch((e) => setError(e.message));
   }, [page]);
   function go(view: string) {
+    window.scrollTo({ top: 0, behavior: "instant" });
     location.hash = view;
     setPage(view);
     setSelected(null);
@@ -162,6 +170,29 @@ function App() {
     ["profile", "요원 프로필", Fingerprint],
   ] as const;
   const clearance = me?.clearance || 0;
+  const currentZone = selected
+    ? getScene(selected.id).zone
+    : page === "documents"
+      ? "research"
+      : page === "missions"
+        ? chapterZones[Math.min(clearance + 1, 3)]
+        : "control";
+  const zone = zones[currentZone];
+  function visitChapter(chapter: number) {
+    if (clearance < chapter - 1) {
+      setError("이전 챕터를 완료해 보안 인가를 획득하세요.");
+      return;
+    }
+    go("missions");
+    requestAnimationFrame(() =>
+      document.getElementById(`chapter-${chapter}`)?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "start",
+      }),
+    );
+  }
   return (
     <div className="app">
       {me ? (
@@ -232,7 +263,15 @@ function App() {
               </div>
             </div>
           </aside>
-          <div className="workspace">
+          <div
+            className="workspace"
+            data-zone={currentZone}
+            style={
+              {
+                "--facility-scene": `url(${zone.image})`,
+              } as React.CSSProperties
+            }
+          >
             <header className="topbar">
               <div>
                 <button
@@ -267,6 +306,13 @@ function App() {
                 </p>
                 <b>CODE RED</b>
               </div>
+              <div className="location-ticker">
+                <span>
+                  <i />
+                  {selected ? getScene(selected.id).room : zone.label}
+                </span>
+                <span>{zone.code} / FIELD INVESTIGATION ACTIVE</span>
+              </div>
               {error && (
                 <div className="error-banner" role="alert">
                   {error}
@@ -292,8 +338,12 @@ function App() {
                   c={selected}
                   me={me!}
                   refresh={refresh}
-                  back={() => setSelected(null)}
+                  back={() => go("missions")}
                   ending={() => setShowEnding(true)}
+                  next={(id) => {
+                    const next = catalog.challenges.find((c) => c.id === id);
+                    if (next) openChallenge(next);
+                  }}
                 />
               ) : (
                 <>
@@ -349,6 +399,11 @@ function App() {
                           </div>
                         </div>
                       </section>
+                      <FacilityRoute
+                        solved={me.solved}
+                        clearance={clearance}
+                        onChapter={visitChapter}
+                      />
                       <section className="stats-grid">
                         <Stat
                           label="전체 격리 개체"
@@ -555,6 +610,11 @@ function App() {
                         title="조사 임무"
                         description="작은 단서부터 시작하세요. 모든 임무에 세 단계의 힌트가 제공됩니다."
                       />
+                      <FacilityRoute
+                        solved={me.solved}
+                        clearance={clearance}
+                        onChapter={visitChapter}
+                      />
                       <div className="mission-legend">
                         <span>
                           <i className="legend-dot green" /> AVAILABLE
@@ -568,7 +628,11 @@ function App() {
                         <b>{me?.score || 0} / 2,250 PT</b>
                       </div>
                       {catalog.chapters.map((ch) => (
-                        <section className="chapter-section" key={ch.id}>
+                        <section
+                          className="chapter-section"
+                          id={`chapter-${ch.id}`}
+                          key={ch.id}
+                        >
                           <div className="chapter-heading">
                             <span>CHAPTER 0{ch.id}</span>
                             <h2>{ch.title}</h2>
@@ -577,6 +641,7 @@ function App() {
                               {ch.requiredClearance + 1}
                             </small>
                           </div>
+                          <SectorBanner chapter={ch.id} solved={me.solved} />
                           <div className="challenge-grid">
                             {catalog.challenges
                               .filter((c) => c.chapterId === ch.id)
@@ -597,6 +662,7 @@ function App() {
                                     onClick={() => openChallenge(c)}
                                     aria-label={`${num(c.id)} ${c.title}${locked ? " 잠김" : ""}`}
                                   >
+                                    <SceneThumb id={c.id} />
                                     <div className="challenge-top">
                                       <span>MISSION {num(c.id)}</span>
                                       {locked ? (
@@ -1204,12 +1270,14 @@ function ChallengeView({
   refresh,
   back,
   ending,
+  next,
 }: {
   c: Challenge;
   me: Me;
   refresh: () => Promise<Me | null>;
   back: () => void;
   ending: () => void;
+  next: (id: number) => void;
 }) {
   const [flag, setFlag] = useState(""),
     [hints, setHints] = useState<string[]>([]),
@@ -1255,6 +1323,7 @@ function ChallengeView({
       </div>
       <div className="challenge-layout">
         <div>
+          <EvidenceScene id={c.id} solved={solved} />
           <section className="panel story-panel">
             <span className="eyebrow">INCIDENT BRIEF</span>
             <h2>사건 기록</h2>
@@ -1366,6 +1435,17 @@ function ChallengeView({
                     ?.incident
                 }
               </p>
+              {c.id < 10 && (
+                <button className="scene-next" onClick={() => next(c.id + 1)}>
+                  <span>
+                    <small>다음 조사 지점</small>
+                    <b>{getScene(c.id + 1).room}</b>
+                  </span>
+                  <span>
+                    다음 현장으로 <ArrowRight size={15} />
+                  </span>
+                </button>
+              )}
             </section>
           )}
         </div>

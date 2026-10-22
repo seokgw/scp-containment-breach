@@ -1,0 +1,110 @@
+{
+  "generator": "Built-in image_gen",
+  "purpose": "Original fictional investigation scene artwork; no original game screenshots",
+  "assets": [
+    {
+      "id": "facility-control",
+      "path": "public/images/story/facility-control.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 124200,
+      "prompt": "Create an original atmospheric environment background image for an SCP-inspired fictional security investigation web game, not a screenshot or UI mockup. Wide landscape 1536x1024. Abandoned underground entrance-zone security control office, long glass observation wall, steel consoles, concrete, paper debris, dark teal grey and muted olive, one deep red emergency light, fluorescent light spilling into fog, eerie restrained cinematic realism, no people, no monsters, no gore. Empty center has low contrast to allow a readable web interface to overlay it. No readable text, no logos, no watermark, no third-party artwork, no SCP-173 sculpture. Architectural inspiration only from secure research offices and containment checkpoint corridors. Film still, strong material detail, deliberate shadows, desaturated palette."
+    },
+    {
+      "id": "facility-containment",
+      "path": "public/images/story/facility-containment.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 136956,
+      "prompt": "Create an original cinematic environmental background, wide landscape 1536x1024, for an SCP-inspired underground investigation game. Heavy concrete containment checkpoint outside an empty observation chamber, sealed massive industrial door, yellow-black floor caution markings, cable trays, steel railings, cold pale blue lights and single amber emergency lamp, low mist, traces of abandoned activity, no people, no creature or statue, no gore, no game logos, no words, no watermark. Sophisticated dark atmospheric photography, broad areas of subdued texture suitable for a web page background; near-black teal charcoal shadows, physically convincing architecture. Do not recreate any existing game screenshot."
+    },
+    {
+      "id": "facility-research",
+      "path": "public/images/story/facility-research.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 125748,
+      "prompt": "Create original cinematic background environmental art for a fictional SCP-inspired research archive. Landscape 1536x1024. Underground medical research records room, dusty metal filing cabinets, deserted steel examination desk, analog reel recorder, server cabinets with dim red status lights, scattered closed folders, greenish frosted window, dirty concrete and fluorescent illumination fading into darkness. No people, no creatures, no skull masks, no gore. Desaturated green-grey, detailed tangible materials, very dark cinematic shadows, subtle red emergency glow. No readable text or logos or watermark; original art rather than a recreation of any game screenshot. Background space must support a web interface overlay."
+    },
+    {
+      "id": "evidence-001",
+      "path": "public/images/story/evidence-001.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 141478,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. An abandoned security console desk beside a glass window: one ragged torn warning sheet taped to a dead green CRT monitor, dusty keyboard, jagged paper corners, faded ink and broad black redaction bars on paper, emergency red reflection on glass."
+    },
+    {
+      "id": "evidence-002",
+      "path": "public/images/story/evidence-002.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 145002,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. A small research office desktop: a half-shredded yellow administrative memo, separated paper fragments next to an unplugged keyboard, a monitor showing only abstract code-like lines, old cable loops, cold desk light, dust and torn adhesive tape."
+    },
+    {
+      "id": "evidence-003",
+      "path": "public/images/story/evidence-003.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 144320,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. A radio communications nook: damaged teletype paper strip emerging from an old receiver, punched holes and faded typewriter texture, missing middle section of the message, a reel-to-reel recorder and coiled radio handset nearby, amber status lamp."
+    },
+    {
+      "id": "evidence-004",
+      "path": "public/images/story/evidence-004.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 162176,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. A containment checkpoint access-card reader and brushed steel guard desk: a water-damaged authentication logbook open with several lines violently scratched out, torn right page edge, discarded blank plastic badge, blue overhead fluorescent light, yellow caution stripe."
+    },
+    {
+      "id": "evidence-005",
+      "path": "public/images/story/evidence-005.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 153646,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. Outside an EMPTY containment observation room: a cracked small CCTV monitor on the desk, torn black-and-white printed surveillance still with washed-out bottom, small evidence photo tabs, distant empty concrete chamber behind observation glass, no creature or statue."
+    },
+    {
+      "id": "evidence-006",
+      "path": "public/images/story/evidence-006.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 124606,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. A deserted laboratory records side room: partially open metal filing drawer, two researcher report folders, one opened paper file with heavy censor bars and a missing corner held by a rusty binder clip, subtle green security keypad, no human."
+    },
+    {
+      "id": "evidence-007",
+      "path": "public/images/story/evidence-007.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 159762,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. An investigation workstation at a checkpoint: two weathered time logs lying side by side on a dark steel desk, one with a torn time column and partially erased horizontal rows, grease pencil markings and physical paper clips, a disconnected surveillance cable, cold overhead lamp."
+    },
+    {
+      "id": "evidence-008",
+      "path": "public/images/story/evidence-008.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 168750,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. An abandoned underground medical researcher office: a distressed stitched notebook opened to a page with faded illegible cipher marks, torn lower edge, chemical water stain, graphite pencil and dull steel specimen tray in background, no gore, greenish examination lamp."
+    },
+    {
+      "id": "evidence-009",
+      "path": "public/images/story/evidence-009.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 180480,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. A dark underground server room maintenance trolley: an evidence envelope, scratched unbranded memory drive and a dot-matrix network printout with paper perforations and a removed strip, background server cabinets with dim amber lamps and cables, no screen text."
+    },
+    {
+      "id": "evidence-010",
+      "path": "public/images/story/evidence-010.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 169344,
+      "prompt": "Create one original photorealistic cinematic environmental evidence still for a fictional SCP-inspired story investigation game. Landscape 1536x1024. Composition: close-up discoverable object occupies the lower center, enough surrounding room to establish place; believable physical paper texture, hard side light, desaturated charcoal teal and olive with very restrained red emergency light. NOT a UI screenshot, NOT a collage, NOT a contact sheet. Clear visible damage: torn edges, faded/erased areas or black censor bars. All writing must be indistinct texture only: no readable words, no numbers, NO flag, no answer, no text to solve a puzzle, no logos, no watermarks. The actual readable evidence will be placed as an accessible HTML overlay later. No people, no gore, no recognizable SCP-173 sculpture, no copied game art. A secret underground archive desk: a classified research report torn into three adjoining fragments, a thick redacted top section, coffee stains and missing signature area, a dark red blank stamp shape, manila folder and small oxidized paper clips, a restricted vault blurred behind."
+    }
+  ]
+}

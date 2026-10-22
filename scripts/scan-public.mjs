@@ -16,7 +16,7 @@ const tokenPatterns = [
   /-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----/,
 ];
 for (const f of files) {
-  if (/\.(png|pcap)$/.test(f)) continue;
+  if (/\.(png|webp|pcap)$/.test(f)) continue;
   const text = readFileSync(f, "utf8");
   assert.ok(
     !tokenPatterns.some((p) => p.test(text)),
