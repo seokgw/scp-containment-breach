@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   Activity,
@@ -1289,10 +1289,21 @@ function ChallengeView({
 }) {
   const [flag, setFlag] = useState(""),
     [hints, setHints] = useState<string[]>([]),
+    [hintBank, setHintBank] = useState<string[]>([]),
+    [requestedHint, setRequestedHint] = useState(0),
+    [hintStatus, setHintStatus] = useState(""),
     [solution, setSolution] = useState(""),
     [message, setMessage] = useState(""),
     [correct, setCorrect] = useState(false),
     [busy, setBusy] = useState(false);
+  const hintRequests = useRef(new Set<number>());
+  useEffect(() => {
+    let active = true;
+    api<{ availableHints: string[] }>(`/challenges/${c.id}`)
+      .then(result => { if (active) setHintBank(result.availableHints || []); })
+      .catch(() => { /* A click can still request a hint when preload fails. */ });
+    return () => { active = false; };
+  }, [c.id]);
   const canReview = me.user.role === "admin" || me.solved.includes(c.id);
   const solved = me.solved.includes(c.id),
     previousHint = Math.max(
@@ -1537,18 +1548,23 @@ function ChallengeView({
             {[1, 2, 3].map((level) => (
               <div className="hint-item" key={level}>
                 <button
-                  onClick={async () => {
-                    try {
-                      const result = await api<{ hints: string[] }>(
-                        `/challenges/${c.id}/hint`,
-                        { level },
-                      );
-                      setHints(result.hints);
-                      await refresh();
-                    } catch (e) {
-                      setCorrect(false);
-                      setMessage((e as Error).message);
-                    }
+                  aria-expanded={Math.max(requestedHint, hints.length) >= level}
+                  aria-controls={`hint-${c.id}-${level}`}
+                  onClick={() => {
+                    setRequestedHint(current => Math.max(current, level));
+                    if (hintBank.length) setHints(current => hintBank.slice(0, Math.max(current.length, level)));
+                    if (hintRequests.current.has(level)) return;
+                    hintRequests.current.add(level);
+                    setHintStatus("");
+                    void api<{ hints: string[] }>(`/challenges/${c.id}/hint`, { level })
+                      .then(result => {
+                        setHints(current => current.length > result.hints.length ? current : result.hints);
+                        void refresh();
+                      })
+                      .catch((e: Error) => {
+                        hintRequests.current.delete(level);
+                        setHintStatus(`힌트 사용 기록 저장 실패: ${e.message} 같은 단계를 눌러 다시 시도하세요.`);
+                      });
                   }}
                 >
                   <span>
@@ -1561,9 +1577,12 @@ function ChallengeView({
                     <ChevronRight size={15} />
                   )}
                 </button>
-                {hints[level - 1] && <p>{hints[level - 1]}</p>}
+                {Math.max(requestedHint, hints.length) >= level && (
+                  <p id={`hint-${c.id}-${level}`} role="status">{hints[level - 1] || hintBank[level - 1] || "힌트를 불러오는 중…"}</p>
+                )}
               </div>
             ))}
+            {hintStatus && <p className="form-error" role="alert">{hintStatus}</p>}
             {previousHint > 0 && !hints.length && (
               <p className="muted">
                 이전에 {previousHint}단계까지 확인했습니다. 해당 단계를 눌러

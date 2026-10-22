@@ -178,3 +178,12 @@
 .document-scene-backdrop .dossier{transform:rotate(-.4deg);box-shadow:0 25px 90px #000b}
 @media(min-width:1100px){.workspace .challenge-layout{max-width:1000px;margin:0 auto}.workspace .scene-stage{min-height:650px}.workspace .scene-stage.scene-reading{min-height:850px}}
 @media(max-width:600px){.workspace .scene-stage{min-height:540px}.workspace .scene-stage.scene-reading{min-height:800px}.workspace .scene-stage .fragment-wrap{padding:100px 23px 80px}.workspace .scene-stage .fragment-paper{padding:30px 22px}.workspace .scene-stage .fragment-paper h3{font-size:19px}.workspace .scene-stage .fragment-paper p{font-size:12px}.workspace .field-evidence .field-header{padding:17px}.workspace .field-state{font-size:7px}.workspace .challenge-side{grid-template-columns:1fr;gap:0}.workspace .scene-stage .field-photo-caption{left:16px}.workspace .scene-stage .field-room{top:90px}}
+/* Portaled enlargement lives outside .workspace, so it needs its own material rules. */
+.evidence-lightbox{background:var(--grain),radial-gradient(ellipse at center,#1c2816e8,#080d06f5);backdrop-filter:blur(6px)}
+.evidence-lightbox-inner{background:var(--grain),#151e10;border-color:#77855c88;border-radius:1px;box-shadow:0 20px 90px #000c,inset 0 1px #dce5c619}
+.evidence-lightbox-inner>header{background:var(--grain),#1c2815;border-bottom-color:#6c7d4f77}
+.evidence-lightbox-inner>header span{color:#a7b88a}.evidence-lightbox-inner h2{color:#dce3cb;font-weight:500}
+.evidence-lightbox-inner>header>button{background:var(--grain),#2f4022;border-color:#82986688;color:#d1ddba;border-radius:0}
+.evidence-lightbox-inner>header>button:hover{background:#4b6138}.evidence-lightbox-inner>header>button:focus-visible{outline:2px solid #c0d1a2;outline-offset:4px}
+.evidence-lightbox-inner>img{background:#0a1007;filter:saturate(.75)}
+.evidence-lightbox-inner>p{background:var(--grain),#151e10;color:#bac6a4;border-top:1px solid #6c7d4f44}

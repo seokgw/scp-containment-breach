@@ -11,6 +11,7 @@ test('admin access is server enforced, independent of progress, excluded from ra
  assert.equal((await call('/me')).body.user.role,'agent');
  assert.equal((await call('/admin/overview')).status,403);
  assert.equal((await call('/challenges/10')).status,403);
+ const preview=(await call('/challenges/1')).body;assert.equal(preview.availableHints.length,3);assert.equal((await repo.select('hints')).length,0);assert.equal(preview.explanation,undefined);assert.ok(!(await call('/catalog')).body.challenges.some(c=>c.availableHints));
  repo.db.prepare("UPDATE users SET role='admin' WHERE codename='admin_test'").run();
  const me=(await call('/me')).body;
  assert.equal(me.user.role,'admin');assert.equal(me.score,0);assert.equal(me.clearance,0);assert.deepEqual(me.solved,[]);assert.equal(me.accessClearance,3);assert.equal(me.documents.length,10);assert.ok(me.ending);assert.equal(me.completed,false);

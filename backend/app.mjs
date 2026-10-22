@@ -222,6 +222,7 @@ export function createHandler(
         const { hints, explanation, document, ...publicChallenge } = c;
         return json({
           challenge: publicChallenge,
+          availableHints: hints,
           solved: progress.solved.includes(id),
         });
       }
