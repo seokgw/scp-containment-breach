@@ -144,3 +144,8 @@
 .intro-alert{color:#d4a083}.intro-facts{border-color:#71805a44}
 .workspace .document-card>.document-cover{display:block;margin-bottom:18px}.workspace .document-card>.document-cover>span{font:8px var(--mono);letter-spacing:1.5px}
 .workspace .sector-banner,.workspace .field-evidence,.workspace .facility-route{background-blend-mode:normal}
+/* Small terminal fittings share the same painted metal finish. */
+.workspace .terminal-log{background:var(--grain),repeating-linear-gradient(transparent 0 3px,#0001 3px 4px),#0b1309;border-color:#65744a77;color:#becba6}
+.workspace .terminal-intro{color:#94a57c}.workspace .challenge-meta>span,.workspace .level-tag{background:var(--grain),#232e1c;border-color:#7c895b77;color:#c1cfaa;border-radius:0}
+.sidebar .avatar,.workspace .avatar,.workspace .progress-banner>div:first-child>svg{background:var(--grain),#28331f;border-color:#7b895966;color:#c3ceae;border-radius:1px}
+.workspace .log-panel .log-foot,.workspace .detail-grid{border-color:#74825155}.workspace .detail-grid dt{color:#9da98a}.workspace .detail-grid dd{color:#d1d9c1}
