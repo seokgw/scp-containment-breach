@@ -1359,6 +1359,14 @@ function ChallengeView({
             />
             {c.attachment ? (
               <>
+                {c.attachment.endsWith(".png") && (
+                  <figure className="evidence-preview">
+                    <a href={"/evidence/" + c.attachment} target="_blank" rel="noreferrer" aria-label="회수한 CCTV 원본 이미지 열기">
+                      <img src={"/evidence/" + c.attachment} alt="격리실 철문과 깨진 관측창이 기록된 제17기지 CCTV 회수 프레임" />
+                    </a>
+                    <figcaption>RECOVERED FRAME / CAM 173-B · 원본을 열거나 다운로드하여 분석하세요.</figcaption>
+                  </figure>
+                )}
                 <div className="evidence-file">
                   <FileText size={32} />
                   <div>

@@ -1,3 +1,6 @@
+import sharp from "sharp";
+import { fileURLToPath } from "node:url";
+import { evidencePage } from "./evidence-page.mjs";
 import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { randomBytes, createHash } from "node:crypto";
 import { deflateSync } from "node:zlib";
@@ -39,8 +42,7 @@ write(
   ),
 );
 const base = "public/evidence/";
-const page = (title, body, head = "") =>
-  `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>body{background:#0b0f14;color:#cbd5e1;font:16px monospace;max-width:800px;margin:10vh auto;padding:24px;line-height:1.8}h1{color:#ef4444}a{color:#94a3b8}</style>${head}</head><body><p>SCP FOUNDATION / TRAINING EVIDENCE</p><h1>${title}</h1>${body}</body></html>`;
+const page = evidencePage;
 write(
   base + "001/control.html",
   page(
@@ -84,30 +86,12 @@ function chunk(type, data) {
   crc.writeUInt32BE(crc32(Buffer.concat([t, data])));
   return Buffer.concat([len, t, data, crc]);
 }
-const w = 640,
-  h = 360,
-  ihdr = Buffer.alloc(13);
-ihdr.writeUInt32BE(w, 0);
-ihdr.writeUInt32BE(h, 4);
-ihdr[8] = 8;
-ihdr[9] = 2;
+const w = 1280, h = 720, ihdr = Buffer.alloc(13);
+ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 2;
+const pixels = await sharp(fileURLToPath(new URL("public/images/story/cctv-173-source.png", root))).resize(w,h).removeAlpha().raw().toBuffer();
 const raw = Buffer.alloc((w * 3 + 1) * h);
-for (let y = 0; y < h; y++)
-  for (let x = 0; x < w; x++) {
-    const p = y * (w * 3 + 1) + 1 + x * 3,
-      k = y % 4 === 0 ? 6 : 0;
-    raw[p] = 12 + k;
-    raw[p + 1] = 23 + k;
-    raw[p + 2] = 28 + k;
-    if (
-      (x > 160 && x < 480 && (y === 100 || y === 260)) ||
-      (y > 100 && y < 260 && (x === 160 || x === 480))
-    ) {
-      raw[p] = 80;
-      raw[p + 1] = 130;
-      raw[p + 2] = 120;
-    }
-  }
+for (let y = 0; y < h; y++) pixels.copy(raw, y * (w * 3 + 1) + 1, y * w * 3, (y + 1) * w * 3);
+
 write(
   base + "005/cctv.png",
   Buffer.concat([

@@ -2330,3 +2330,4 @@ code {
     visibility: hidden;
   }
 }
+.evidence-preview{margin:0 0 22px;border:1px solid #52665955;background:#080d0b}.evidence-preview img{display:block;width:100%;height:auto}.evidence-preview figcaption{padding:12px 14px;font:10px/1.8 Consolas,monospace;letter-spacing:1px;color:#9aac9e}.evidence-preview a:focus-visible{display:block;outline:2px solid #c0d9b8;outline-offset:4px}
