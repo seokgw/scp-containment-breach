@@ -30,6 +30,7 @@ import {
   SectorBanner,
 } from "./Investigation";
 import { chapterZones, getScene, zones } from "./story";
+import "./foundation.css";
 type Doc = {
   id: string;
   title: string;
@@ -381,26 +382,9 @@ function App() {
                         </div>
                         <div
                           className="hero-visual"
-                          aria-label="기지 격리 상태 도식"
+                          aria-label="제17기지 마지막 CCTV 수신 화면"
                         >
-                          <div className="radar">
-                            <div className="radar-ring ring-one" />
-                            <div className="radar-ring ring-two" />
-                            <div className="radar-cross" />
-                            <Shield size={78} strokeWidth={1} />
-                            <span className="radar-coordinate top">
-                              SECTOR 17 / SIGNAL LOST
-                            </span>
-                            <span className="radar-coordinate bottom">
-                              7 CONTAINMENT FAILURES
-                            </span>
-                            {Array.from({ length: 7 }, (_, i) => (
-                              <i key={i} className={"radar-dot dot-" + i} />
-                            ))}
-                          </div>
-                          <div className="visual-label">
-                            CONTAINMENT STATUS <b>CRITICAL</b>
-                          </div>
+                          <div className="visual-label">CAM 173-B / ARCHIVE FRAME <b>SIGNAL LOST · 03:17:21</b></div>
                         </div>
                       </section>
                       <FacilityRoute
@@ -750,6 +734,10 @@ function App() {
                                     )
                               }
                             >
+                              <div className="document-cover">
+                                <img src={getScene(c.id).image} alt="" loading="lazy" />
+                                <span>FOUNDATION ARCHIVE / {num(c.id)}</span>
+                              </div>
                               <div>
                                 <FileText size={25} />
                                 {unlocked ? (
@@ -1097,6 +1085,10 @@ function App() {
             >
               <X />
             </button>
+            <div className="dossier-masthead">
+              <Shield size={34} strokeWidth={1.3} />
+              <div><b>SCP FOUNDATION</b><small>SECURE. CONTAIN. PROTECT. / SITE-17</small></div>
+            </div>
             <div className="classified-label">
               {doc.id} / LEVEL {doc.clearance}
             </div>
@@ -1115,6 +1107,7 @@ function App() {
               <dt>관련 연구원 / 출처</dt>
               <dd>{doc.researcher}</dd>
             </dl>
+            <div className="dossier-footer"><span>기밀 기록 사본 / {doc.id}</span><span>ARCHIVE CONTROL · SITE ██-17</span></div>
             {doc.id === "LICENSE" && (
               <div className="license-links">
                 <a

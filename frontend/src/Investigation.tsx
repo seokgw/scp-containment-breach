@@ -96,7 +96,7 @@ export function SectorBanner({
     <div
       className={"sector-banner sector-" + zone.id}
       style={{
-        backgroundImage: `linear-gradient(90deg,rgba(8,14,19,.95),rgba(8,14,19,.35)),url(${zone.image})`,
+        backgroundImage: `linear-gradient(90deg,rgba(13,20,11,.96),rgba(13,20,11,.45)),url(${zone.image})`,
       }}
     >
       <span className="sector-banner-code">{zone.code}</span>

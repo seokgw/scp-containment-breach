@@ -1,0 +1,146 @@
+/* Site-17 materials: painted steel, phosphor terminals and recovered paper. */
+:root {
+  --bg: #0b0e0c;
+  --panel: #151a16;
+  --line: #3c453b;
+  --muted: #9ca396;
+  --red: #ba6d54;
+  --green: #a6b695;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.07'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h160v160H0z'/%3E%3C/svg%3E");
+}
+.workspace { background: #0b0e0c; color: #dedfd4; }
+.workspace:before { filter: saturate(.35) sepia(.14); }
+.workspace:after { background: linear-gradient(180deg,#0b100bc4,#080c09ed), var(--grain); }
+.sidebar { background: var(--grain),linear-gradient(100deg,#191e18,#111510); border-right-color:#404739; }
+.workspace .topbar { background: var(--grain),#111710f5; border-color:#4b514144; backdrop-filter:none; }
+.sidebar .brand { color:#dedfd4; }
+.sidebar .nav-item { color:#9ca593; border-radius:0; }
+.sidebar .nav-item.active { background:#727c5b20; color:#d1dac1; box-shadow:inset 2px 0 #adb693; }
+.sidebar .nav-item:hover { background:#727c5b15; color:#e1e5d7; }
+.sidebar .sidebar-bottom { border-color:#515b4544; }
+.workspace .panel, .workspace .stat, .workspace .facility-route,
+.workspace .progress-banner, .workspace .future-act {
+  background: var(--grain),linear-gradient(115deg,#1a2019f5,#101710fa);
+  border:1px solid #48513e99;
+  border-radius:1px;
+  box-shadow:inset 0 1px #dce5cb09,0 10px 24px #0003;
+}
+.workspace .panel { position:relative; }
+.workspace .panel:before { content:''; position:absolute; top:-1px; left:18px; width:35px; height:2px; background:#788368; pointer-events:none; }
+.workspace .hero {
+  background:var(--grain),linear-gradient(110deg,#1b2319f5,#101610ed);
+  border:1px solid #5d665099; border-radius:0; backdrop-filter:none;
+  box-shadow:inset 0 1px #f7ffe10d,0 12px 32px #0005;
+}
+.workspace .hero:before { content:'SITE-17 / EMERGENCY DIRECTIVE'; position:absolute; top:0; right:0; z-index:2; padding:7px 13px; background:#11170fdd; border-left:1px solid #89907466; border-bottom:1px solid #89907466; color:#b3bba5; font:9px var(--mono); letter-spacing:1.5px; }
+.workspace .hero h1 { font-weight:600; letter-spacing:-1px; color:#e3e4d5; }
+.workspace .hero h1 span { color:#aab49a; }
+.workspace .hero p { color:#b0b6a5; }
+.workspace .hero-note { color:#929d85; }
+.workspace .hero-visual { width:40%; background:linear-gradient(90deg,#11190f88,#11190f11),url('/images/story/cctv-173-source.png') center/cover; border-left:1px solid #6c77544d; filter:saturate(.5); }
+.workspace .hero-copy { width:60%; }
+.workspace .radar { display:none; }
+.workspace .visual-label { position:absolute; bottom:14px; left:14px; right:14px; margin:0; padding:10px; background:#080d09dc; border:1px solid #7f896450; color:#b3bca3; font-size:8px; line-height:1.8; }
+.workspace .visual-label b { color:#c98e72; }
+.workspace .primary { background:var(--grain),#4c5840; border-color:#87916b; border-radius:1px; color:#f0f0df; box-shadow:inset 0 1px #dde8bd19; }
+.workspace .primary:hover { background:var(--grain),#627052; border-color:#b6bf9b; }
+.workspace .secondary { background:var(--grain),#1c2419; border-color:#77805d88; border-radius:1px; color:#c6ceb7; }
+.workspace .secondary:hover { background:#303b28; }
+.workspace .status-pill { color:#d29b7f; border:1px solid #a6684766; padding:6px 8px; background:#7a3d1e1a; letter-spacing:1.1px; }
+.workspace .status-pill i,.workspace .tiny-red i { background:#c17b56; box-shadow:none; animation:none; }
+.workspace .alert-strip { background:var(--grain),#38291b; border:1px solid #95714966; border-radius:0; color:#d6b694; }
+.workspace .progress-banner { border-left:3px solid #8d9a70; }
+.workspace .section-title > div > span,.workspace .eyebrow,.workspace .page-kicker,.workspace .location-ticker { color:#a8b494; font-family:var(--mono); }
+.workspace .page-title { border-bottom:1px solid #77815a44; padding-bottom:22px; }
+.workspace .page-title h1 { font-weight:500; color:#e3e4d6; }
+.workspace .page-title p,.workspace .muted { color:#a4ad98; }
+.workspace .green-text { color:#b0bf97; }
+.workspace .stat-label { color:#a5ae96; font-family:var(--mono); }
+.workspace .stat strong { color:#dbdfcc; font-weight:500; }
+.workspace .stat small { color:#969f87; }
+.workspace .stat.danger strong { color:#cd987c; }
+.workspace .chapter-row { background:var(--grain),#222a1ddd; border-radius:0; border-color:#66714f55; }
+.workspace .chapter-row.locked { background:var(--grain),#141a13; }
+.workspace .progress-track { background:#080d08; border:1px solid #62714c44; }
+.workspace .progress-track i { background:#94a779; }
+.workspace .facility-route-head,.workspace .location-ticker { border-color:#71805a44; }
+.workspace .facility-node { background:var(--grain),#27312099; border-color:#87976a66; border-radius:0; }
+.workspace .facility-node.route-locked { background:var(--grain),#151b1399; border-color:#5c654a66; }
+.workspace .sector-banner { border:1px solid #77845c88; border-radius:0; box-shadow:inset 0 0 75px #090d08bb; }
+.workspace .sector-banner:after { content:''; position:absolute; inset:0; background:var(--grain); pointer-events:none; }
+.workspace .sector-banner-code { color:#c2cbb1; font-size:9px; letter-spacing:2px; }
+.workspace .sector-banner h3 { font-weight:500; color:#e0e2d0; }
+.workspace .sector-banner p { color:#bbc3ae; font-size:11px; }
+.workspace .sector-banner-count { border-color:#99a67b66; background:#1b2417c9; color:#c9d3b6; }
+.workspace .challenge-card { background:var(--grain),#151d13ed; border:1px solid #68745166; border-radius:0; box-shadow:inset 0 1px #d3e5b210; }
+.workspace .challenge-card:hover { background:var(--grain),#222d1c; border-color:#acb58e; transform:none; }
+.workspace .challenge-card.locked { background:var(--grain),#10170f; }
+.workspace .scene-thumb { border-color:#69775355; }
+.workspace .scene-thumb img,.workspace .field-photo > img { filter:saturate(.55) sepia(.08); }
+.workspace .scene-thumb > span { background:#10170fe0; color:#c9d2ba; }
+.workspace .scene-thumb > i { color:#d0c49f; background:#26281ae0; border-color:#7b805c88; }
+.workspace .challenge-top,.workspace .challenge-bottom,.workspace .challenge-card p { color:#aab79a; }
+.workspace .field-header { background:var(--grain),#192215; border-color:#69755166; }
+.workspace .field-header > div > span { color:#acba94; font-size:9px; }
+.workspace .field-state { background:#27291c; border-color:#8a825866; color:#d2c7a1; }
+.workspace .field-verified { color:#c2d2ad; background:#2c3825; }
+.workspace .field-photo-vignette { background:repeating-linear-gradient(transparent 0 3px,#0001 3px 4px),linear-gradient(180deg,#0b100922,transparent 50%,#080e08d9); }
+.workspace .field-room,.workspace .field-enlarge { background:var(--grain),#131d10e8; border-color:#7e8d6366; border-radius:0; color:#ced7bd; }
+.workspace .field-narrative { background:var(--grain),#151d12; }
+.workspace .field-narrative > p { color:#bbc5ad; }
+.workspace .fragment-wrap { background:var(--grain),#10160d; border-color:#717b5066; }
+.workspace .fragment-paper {
+  background:var(--grain),radial-gradient(ellipse at 2% 90%,#826b3c55,transparent 45%),linear-gradient(105deg,#bcb69a,#d1ccb2 50%,#b8b194);
+  color:#303426; box-shadow:0 15px 25px #0008; font-family:Consolas,'Noto Sans KR',monospace;
+}
+.workspace .fragment-stamp { color:#7f4031; border-color:#7f4031; opacity:.8; }
+.workspace .fragment-annotation { color:#4c513c; }
+.workspace .fragment-missing { border-color:#776e50; background:#8d85662b; color:#655e45; }
+.workspace .evidence-file { background:var(--grain),#212b1b; border:1px dashed #7b895c88; border-radius:0; }
+.workspace .evidence-file > svg { color:#bac69d; }
+.workspace .evidence-preview { border-color:#75815877; box-shadow:0 9px 22px #0006; }
+.workspace .evidence-preview figcaption { background:var(--grain),#141d10; color:#b5c09e; }
+.workspace .flag-panel input { background:#0b1209; border-color:#71835288; color:#d5e4bb; border-radius:0; }
+.workspace .hint-item { border-color:#6f7d5144; }
+.workspace .solution-panel { border-left:3px solid #8ca26d; }
+.workspace .document-card { overflow:hidden; text-align:left; padding:0 20px 24px; background:var(--grain),linear-gradient(110deg,#292d20,#1b2217); border-color:#87906c77; }
+.workspace .document-card:before { left:auto; right:18px; width:36px; background:#a59165; }
+.document-cover { height:100px; margin:0 -20px 18px; position:relative; overflow:hidden; border-bottom:1px solid #87906c66; }
+.document-cover img { width:100%; height:100%; object-fit:cover; filter:grayscale(.65) sepia(.18) brightness(.6); }
+.document-cover:after { content:''; position:absolute; inset:0; background:var(--grain),linear-gradient(transparent,#1a2117b3); pointer-events:none; }
+.document-cover span { position:absolute; z-index:1; bottom:10px; left:16px; font:9px var(--mono); letter-spacing:2px; color:#e0d5af; }
+.workspace .document-card > div:not(.document-cover) { margin-bottom:18px; }
+.workspace .document-card > small { color:#c4bb97; font:10px var(--mono); letter-spacing:2px; }
+.workspace .document-card h3 { color:#e0ddc4; font-weight:500; }
+.workspace .document-card p { color:#b5b89f; }
+.workspace .document-card.locked .document-cover img { filter:grayscale(1) brightness(.25); }
+.workspace .document-card.locked { opacity:.75; }
+.dossier { color-scheme:light; max-width:740px; border:1px solid #a49c7d; border-radius:1px; background:var(--grain),radial-gradient(ellipse at top right,#a0916644,transparent 50%),linear-gradient(105deg,#c3bea3,#ddd7bc 50%,#cbc4a8); color:#2a3025; box-shadow:0 30px 100px #000b,inset 0 0 55px #7e71472b; padding:42px 46px; }
+.dossier:before { content:''; position:absolute; inset:12px; border:1px solid #706c4e44; pointer-events:none; }
+.dossier-masthead { display:flex; align-items:center; gap:14px; border-bottom:2px solid #575b45; margin-bottom:25px; padding:0 32px 18px 0; }
+.dossier-masthead > svg { color:#3e4834; }
+.dossier-masthead b { display:block; font:600 14px var(--mono); letter-spacing:2px; }
+.dossier-masthead small { display:block; font:8px var(--mono); letter-spacing:2px; color:#5b624c; margin-top:6px; }
+.dossier .classified-label { display:inline-block; color:#7b3c2d; border:2px solid #874c3a99; padding:5px 10px; background:transparent; font:10px var(--mono); letter-spacing:1.5px; transform:rotate(-1deg); }
+.dossier h2 { color:#2d3527; font-weight:600; font-size:26px; line-height:1.6; margin:23px 0; }
+.dossier dt { color:#4b533d; border-color:#72795866; font:600 11px/1.8 var(--mono); letter-spacing:1px; }
+.dossier dd { color:#30382a; font-size:13px; line-height:2.1; }
+.dossier .modal-close { color:#444e37; z-index:1; }
+.dossier-footer { display:flex; justify-content:space-between; gap:15px; border-top:2px solid #62684d; padding-top:16px; font:9px/1.8 var(--mono); letter-spacing:1px; color:#5b6047; }
+.dossier .license-links a { color:#654331; text-decoration:underline; }
+.workspace .ranking-row { border-color:#7d896047; }
+.workspace .ranking-head { background:var(--grain),#25301d; color:#bac5a3; }
+.workspace .agent-card { background:var(--grain),linear-gradient(130deg,#28331e,#111b0d); }
+.workspace .briefing { background:var(--grain),#1b2417; }
+.workspace .briefing blockquote { border-color:#939b70; color:#c9d1b6; }
+.workspace .lab-instructions pre { background:var(--grain),#0c1309; color:#c1d1aa; border-color:#637b4766; }
+.workspace button:focus-visible,.workspace a:focus-visible,.dossier button:focus-visible { outline:2px solid #bdc89f; outline-offset:4px; }
+@media(max-width:800px){.workspace .hero-copy{width:65%}.workspace .hero-visual{width:35%}.workspace .hero:before{font-size:7px}.workspace .visual-label{font-size:7px;left:8px;right:8px}.workspace .visual-label b{display:block;margin-left:0}.document-cover{height:90px}.dossier{padding:30px 24px}.dossier-masthead b{font-size:12px}.dossier h2{font-size:22px}}
+@media(max-width:500px){.workspace .hero-copy{width:100%}.workspace .hero-visual{display:none}.workspace .hero{background:var(--grain),linear-gradient(90deg,#121c10f5,#10190fd9),url('/images/story/cctv-173-source.png') center/cover}.workspace .hero:before{font-size:6px}.workspace .document-card{padding:0 15px 20px}.document-cover{margin:0 -15px 16px}.dossier-footer{flex-direction:column;gap:4px}.workspace .sector-banner p{max-width:100%;font-size:10px}}
+/* Intro uses the same metal finish without changing the supplied corridor photo. */
+.intro-content{background:var(--grain),linear-gradient(120deg,#182016,#0c120b)}
+.intro-login{background:var(--grain),#151e11e8;border-color:#7c895c66;border-radius:1px;box-shadow:inset 0 1px #d4dfbd0d,0 12px 32px #0004}
+.intro-submit{background:var(--grain),#4c5840;border-color:#87916b;border-radius:1px}.intro-submit:hover{background:#627052}
+.intro-alert{color:#d4a083}.intro-facts{border-color:#71805a44}
+.workspace .document-card>.document-cover{display:block;margin-bottom:18px}.workspace .document-card>.document-cover>span{font:8px var(--mono);letter-spacing:1.5px}
+.workspace .sector-banner,.workspace .field-evidence,.workspace .facility-route{background-blend-mode:normal}
