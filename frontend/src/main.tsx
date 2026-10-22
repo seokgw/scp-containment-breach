@@ -1070,7 +1070,7 @@ function App() {
         </div>
       )}
       {doc && (
-        <div className="modal-backdrop" onClick={() => setDoc(null)}>
+        <div className="modal-backdrop document-scene-backdrop" style={{backgroundImage: `linear-gradient(#04080466,#04080488),url(${doc.id.startsWith("DOC-") ? getScene(Number(doc.id.slice(4))).image : "/images/story/facility-research.webp"})`}} onClick={() => setDoc(null)}>
           <article
             className="modal dossier"
             role="dialog"

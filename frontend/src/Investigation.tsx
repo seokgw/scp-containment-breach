@@ -171,9 +171,48 @@ export function EvidenceScene({ id, solved }: { id: number; solved: boolean }) {
           {solved ? "증거 검증 완료" : "현장 기록 발견"}
         </span>
       </div>
-      <div className="field-photo">
+      <div className={"field-photo scene-stage " + (inspected ? "scene-reading" : "")}>
         <img src={scene.image} alt={scene.alt} decoding="async" />
         <div className="field-photo-vignette" />
+      {inspected && (
+        <div className="fragment-wrap" id={"fragment-" + id}>
+          <article className="fragment-paper">
+            <button className="scene-document-close" onClick={() => setInspected(false)} aria-label="회수 문서 접기"><X size={17} /></button>
+            <div className="fragment-paper-top">
+              <span>FOUNDATION / INCIDENT RECORD</span>
+              <b>E-{String(id).padStart(3, "0")}</b>
+            </div>
+            <div className="fragment-stamp">DAMAGED COPY</div>
+            <h3>{scene.item}</h3>
+            <div className="fragment-meta">
+              <span>발견 위치: {scene.room}</span>
+              <span>복원 상태: 부분 판독</span>
+            </div>
+            <p>
+              <span
+                className="ink-redaction"
+                aria-label="훼손으로 판독할 수 없음"
+              >
+                [판독 불가]
+              </span>{" "}
+              / {scene.fragment}
+            </p>
+            <div className="fragment-missing" aria-label="문서 일부 소실">
+              해당 부분 소실
+            </div>
+            <p className="fragment-annotation">분석관 메모 — {scene.lead}</p>
+            <div className="fragment-paper-bottom">
+              <span>기록의 진위는 원본 증거로 검증할 것.</span>
+              <span>복구 사본</span>
+            </div>
+          </article>
+          <p className="field-note">
+            현장 이미지는 이야기 연출입니다. 실제 분석은 아래 원본 실습 자료로
+            진행하세요.
+          </p>
+        </div>
+      )}
+
         <span className="field-room">
           <MapPin size={11} />
           {scene.room}
@@ -218,43 +257,6 @@ export function EvidenceScene({ id, solved }: { id: number; solved: boolean }) {
           </span>
         </div>
       </div>
-      {inspected && (
-        <div className="fragment-wrap" id={"fragment-" + id}>
-          <article className="fragment-paper">
-            <div className="fragment-paper-top">
-              <span>FOUNDATION / INCIDENT RECORD</span>
-              <b>E-{String(id).padStart(3, "0")}</b>
-            </div>
-            <div className="fragment-stamp">DAMAGED COPY</div>
-            <h3>{scene.item}</h3>
-            <div className="fragment-meta">
-              <span>발견 위치: {scene.room}</span>
-              <span>복원 상태: 부분 판독</span>
-            </div>
-            <p>
-              <span
-                className="ink-redaction"
-                aria-label="훼손으로 판독할 수 없음"
-              >
-                [판독 불가]
-              </span>{" "}
-              / {scene.fragment}
-            </p>
-            <div className="fragment-missing" aria-label="문서 일부 소실">
-              해당 부분 소실
-            </div>
-            <p className="fragment-annotation">분석관 메모 — {scene.lead}</p>
-            <div className="fragment-paper-bottom">
-              <span>기록의 진위는 원본 증거로 검증할 것.</span>
-              <span>복구 사본</span>
-            </div>
-          </article>
-          <p className="field-note">
-            현장 이미지는 이야기 연출입니다. 실제 분석은 아래 원본 실습 자료로
-            진행하세요.
-          </p>
-        </div>
-      )}
       {expanded &&
         createPortal(
           <div

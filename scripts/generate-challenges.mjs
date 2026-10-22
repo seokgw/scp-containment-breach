@@ -47,14 +47,14 @@ write(
   base + "001/control.html",
   page(
     "EMERGENCY CONSOLE",
-    `<p>중앙 통제: OFFLINE</p><p>메시지 영역이 손상되었습니다. 원본을 조사하십시오.</p><!-- incident-marker: ${flags[1]} -->`,
+    `<p>03:17 / 비상 통제망 응답 없음</p><p>관제실 인원에게 알림. 중앙 통제는 OFFLINE 상태로 전환되었다. 단말에 표시된 마지막 경고는 손상되어 판독할 수 없다.</p><p>화면에 남아 있지 않은 수신 내용은 이 단말의 원본 기록에 보존한다. 외부 연결을 복구하기 전까지 기록을 폐기하지 말 것.</p><!-- incident-marker: ${flags[1]} -->`,
   ),
 );
 write(
   base + "002/memo.html",
   page(
     "DELETED MEMO",
-    '<p>메모가 삭제되었습니다. 복구 모듈 상태: LOADED</p><script src="memo.js"></script>',
+    '<p>수신: 야간 근무 관리자 / 전달 경로: 관제실 단말</p><p>기록 삭제 명령 이후 메모 본문이 소실되었다. 복구 모듈 상태: LOADED. 남은 조각은 원래 순서와 다르게 보관되어 있다.</p><p>인수인계 담당자는 복구 모듈의 원본을 확인하여 전달 내용을 복원할 것. 이 용지에는 복원된 본문을 재출력하지 않는다.</p><script src="memo.js"></script>',
   ),
 );
 const parts = [flags[2].slice(0, 8), flags[2].slice(8, 19), flags[2].slice(19)];
