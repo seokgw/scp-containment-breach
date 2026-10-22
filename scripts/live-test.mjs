@@ -28,8 +28,10 @@ function client() {
         },
         ...(body ? { body: JSON.stringify(body) } : {}),
       });
-      if (response.headers.has("set-cookie"))
-        cookie = response.headers.get("set-cookie").split(";")[0];
+      const sessionCookie = response.headers
+        .getSetCookie()
+        .find((value) => value.startsWith("__Host-scp_session="));
+      if (sessionCookie) cookie = sessionCookie.split(";")[0];
       return {
         status: response.status,
         headers: response.headers,
@@ -41,6 +43,9 @@ function client() {
 mkdirSync(".local", { recursive: true });
 const a = client(),
   b = client();
+const created = new Map();
+const cleanup = [];
+let failure = null;
 let lab;
 try {
   assert.equal((await a.call("/health")).status, 200);
@@ -69,15 +74,19 @@ try {
   pass("all 9 deployed artifacts match independently solved local files");
   lab = spawn(process.execPath, ["challenges/idor/server.mjs"], {
     stdio: "pipe",
+    env: { ...process.env, LAB_PORT: "0" },
   });
-  await new Promise((resolve, reject) => {
+  const ready = await new Promise((resolve, reject) => {
     lab.stdout.once("data", resolve);
     lab.once("error", reject);
   });
-  answers[6] = await solveIdor("http://127.0.0.1:8080");
+  answers[6] = await solveIdor(
+    String(ready).match(/http:\/\/127\.0\.0\.1:\d+/)[0],
+  );
   pass("IDOR lab HTTP analysis (local Node; Docker not tested)");
   let r = await a.call("/auth/register", { codename: names[0], password });
   assert.equal(r.status, 201);
+  created.set(names[0], a);
   for (const attr of [
     "__Host-scp_session=",
     "HttpOnly",
@@ -89,6 +98,7 @@ try {
     (await b.call("/auth/register", { codename: names[1], password })).status,
     201,
   );
+  created.set(names[1], b);
   pass("production registration and hardened cookie");
   assert.equal((await a.call("/challenges/5")).status, 403);
   assert.equal((await a.call("/challenges/11")).status, 404);
@@ -161,37 +171,51 @@ try {
   );
   assert.ok(burst.some((x) => x.status === 429));
   pass("durable production flag submission limit");
-  await a.call("/auth/logout", {});
-  await b.call("/auth/logout", {});
+} catch (e) {
+  failure = e.message;
+  console.error("LIVE TEST FAILED:", e.message);
+  process.exitCode = 1;
+} finally {
+  for (const [codename, agent] of created) {
+    try {
+      // A may have logged out before an assertion failed. Reauthenticate with
+      // this run's in-memory random password; no unrelated account can match.
+      if ((await agent.call("/me")).status === 401)
+        assert.equal(
+          (await agent.call("/auth/login", { codename, password })).status,
+          200,
+        );
+      assert.equal(
+        (
+          await agent.call("/auth/delete", {
+            password,
+            confirmCodename: codename,
+          })
+        ).body.deleted,
+        true,
+      );
+      assert.equal((await agent.call("/me")).status, 401);
+      cleanup.push({ codename, status: "DELETED" });
+    } catch (e) {
+      cleanup.push({ codename, status: "CLEANUP_FAILED" });
+      failure ||= "QA cleanup failed";
+      process.exitCode = 1;
+    }
+  }
   const report = {
     timestamp: new Date().toISOString(),
     base,
     checks,
-    cleanupCodenames: names,
+    cleanup,
+    error: failure,
   };
   writeFileSync(".local/live-results.json", JSON.stringify(report, null, 2));
   console.log(
-    "LIVE TEST COMPLETE:",
+    "LIVE TEST RESULT:",
     checks.length,
-    "checks. Synthetic accounts listed in ignored .local/live-results.json for cleanup.",
+    "checks;",
+    cleanup.filter((c) => c.status === "DELETED").length,
+    "QA accounts deleted.",
   );
-} catch (e) {
-  writeFileSync(
-    ".local/live-results.json",
-    JSON.stringify(
-      {
-        timestamp: new Date().toISOString(),
-        base,
-        checks,
-        cleanupCodenames: names,
-        error: e.message,
-      },
-      null,
-      2,
-    ),
-  );
-  console.error("LIVE TEST FAILED:", e.message);
-  process.exitCode = 1;
-} finally {
   lab?.kill();
 }

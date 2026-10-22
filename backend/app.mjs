@@ -1,4 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { Buffer } from "node:buffer";
 import bcrypt from "bcryptjs";
 import { acts, chapters, challenges, progressOf, ending } from "./catalog.mjs";
 import verifiers from "./verifiers.json" with { type: "json" };
@@ -163,20 +164,35 @@ export function createHandler(
           `${sessionName}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0${secure ? "; Secure" : ""}`;
         return json({ ok: true });
       }
+      if (path === "/auth/delete" && method === "POST") {
+        const b = await readBody();
+        await allowed("delete:" + user.id, 5, 300);
+        if (
+          b.confirmCodename !== user.codename ||
+          typeof b.password !== "string" ||
+          Buffer.byteLength(b.password) > 72 ||
+          !(await bcrypt.compare(b.password, user.password_hash))
+        )
+          fail(403, "계정 삭제 확인 정보가 일치하지 않습니다.");
+        // Delete only the authenticated account; foreign-key cascades remove its
+        // sessions, progress, hints and submissions in the same DB transaction.
+        await repo.remove("users", { id: user.id });
+        headers["Set-Cookie"] =
+          `${sessionName}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0${secure ? "; Secure" : ""}`;
+        return json({ deleted: true });
+      }
       const solvedRows = await repo.select("progress", { user_id: user.id }),
         progress = progressOf(solvedRows);
       if (path === "/me" && method === "GET")
         return json({
           user: { codename: user.codename, createdAt: user.created_at },
           ...progress,
-          hints: await repo
-            .select("hints", { user_id: user.id })
-            .then((rows) =>
-              rows.map(({ challenge_id, level }) => ({
-                challengeId: challenge_id,
-                level,
-              })),
-            ),
+          hints: await repo.select("hints", { user_id: user.id }).then((rows) =>
+            rows.map(({ challenge_id, level }) => ({
+              challengeId: challenge_id,
+              level,
+            })),
+          ),
           documents: challenges
             .filter((c) => progress.solved.includes(c.id))
             .map((c) => c.document),

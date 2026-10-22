@@ -1,5 +1,32 @@
-import http from 'node:http';
-import { readFileSync } from 'node:fs';
-const fixture=JSON.parse(readFileSync(new URL('./fixture.json',import.meta.url),'utf8'));
-const html=(body)=>`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Site-17 / IDOR training lab</title><style>body{font:16px monospace;background:#0b0f14;color:#cbd5e1;padding:8%;line-height:1.8}a{color:#f59e0b}</style></head><body><p>ISOLATED TRAINING LAB / FICTIONAL DATA ONLY</p>${body}</body></html>`;
-http.createServer((req,res)=>{res.setHeader('Content-Type','text/html; charset=utf-8');res.setHeader('X-Content-Type-Options','nosniff');const url=new URL(req.url,'http://lab');if(url.pathname==='/')return res.end(html('<h1>연구 보고서 시스템</h1><p>연구원 100으로 접속됨</p><a href="/report?id=100">내 보고서 보기</a>'));if(url.pathname==='/report'){const id=url.searchParams.get('id');const report=Object.hasOwn(fixture,id)?fixture[id]:null;if(report)return res.end(html(`<h1>${report.title}</h1><p>${report.body}</p>`));}res.statusCode=404;res.end(html('<h1>보고서 없음</h1>'));}).listen(8080,process.env.LAB_HOST||'127.0.0.1',()=>console.log('IDOR lab http://127.0.0.1:8080'));
+import http from "node:http";
+import { readFileSync } from "node:fs";
+const fixture = JSON.parse(
+  readFileSync(new URL("./fixture.json", import.meta.url), "utf8"),
+);
+const html = (body) =>
+  `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Site-17 / IDOR training lab</title><style>body{font:16px monospace;background:#0b0f14;color:#cbd5e1;padding:8%;line-height:1.8}a{color:#f59e0b}</style></head><body><p>ISOLATED TRAINING LAB / FICTIONAL DATA ONLY</p>${body}</body></html>`;
+const server = http
+  .createServer((req, res) => {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    const url = new URL(req.url, "http://lab");
+    if (url.pathname === "/")
+      return res.end(
+        html(
+          '<h1>연구 보고서 시스템</h1><p>연구원 100으로 접속됨</p><a href="/report?id=100">내 보고서 보기</a>',
+        ),
+      );
+    if (url.pathname === "/report") {
+      const id = url.searchParams.get("id");
+      const report = Object.hasOwn(fixture, id) ? fixture[id] : null;
+      if (report)
+        return res.end(html(`<h1>${report.title}</h1><p>${report.body}</p>`));
+    }
+    res.statusCode = 404;
+    res.end(html("<h1>보고서 없음</h1>"));
+  })
+  .listen(
+    Number(process.env.LAB_PORT || 8080),
+    process.env.LAB_HOST || "127.0.0.1",
+    () => console.log("IDOR lab http://127.0.0.1:" + server.address().port),
+  );

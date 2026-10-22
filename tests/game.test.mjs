@@ -7,6 +7,57 @@ import { SQLiteRepository } from "../backend/sqlite.mjs";
 import { challenges, progressOf } from "../backend/catalog.mjs";
 import verifiers from "../backend/verifiers.json" with { type: "json" };
 import { solveFixtures, solveIdor } from "./solve-fixtures.mjs";
+
+test("password-confirmed self-deletion cannot target another user and cascades test data", async () => {
+  const repo = new SQLiteRepository(),
+    handler = createHandler(repo, { origin, secure: false }),
+    a = client(handler),
+    b = client(handler);
+  await a.call("/auth/register", {
+    codename: "cleanup_alpha",
+    password: "cleanup-password-a",
+  });
+  await b.call("/auth/register", {
+    codename: "cleanup_beta",
+    password: "cleanup-password-b",
+  });
+  await a.call("/challenges/1/submit", { flag: solveFixtures()[1] });
+  await a.call("/challenges/1/hint", { level: 1 });
+  assert.equal(
+    (
+      await b.call("/auth/delete", {
+        confirmCodename: "cleanup_alpha",
+        password: "cleanup-password-b",
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await a.call("/auth/delete", {
+        confirmCodename: "cleanup_alpha",
+        password: "incorrect-password",
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await a.call("/auth/delete", {
+        confirmCodename: "cleanup_alpha",
+        password: "cleanup-password-a",
+      })
+    ).body.deleted,
+    true,
+  );
+  assert.equal((await a.call("/me")).status, 401);
+  assert.equal((await b.call("/me")).status, 200);
+  for (const table of ["progress", "submissions", "hints"])
+    assert.equal((await repo.select(table)).length, 0);
+  assert.equal((await repo.select("users")).length, 1);
+  assert.equal((await repo.select("sessions")).length, 1);
+  repo.db.close();
+});
 const origin = "http://localhost:5173";
 function client(handler) {
   let cookie = "";
@@ -40,15 +91,18 @@ function client(handler) {
 test("all ten artifacts are independently solvable and match verifiers", async () => {
   const lab = spawn(process.execPath, ["challenges/idor/server.mjs"], {
     stdio: "pipe",
+    env: { ...process.env, LAB_PORT: "0" },
   });
   try {
-    await new Promise((resolve, reject) => {
+    const ready = await new Promise((resolve, reject) => {
       lab.stdout.once("data", resolve);
       lab.once("error", reject);
       lab.once("exit", (code) => reject(Error("Lab failed: " + code)));
     });
     const answers = solveFixtures();
-    answers[6] = await solveIdor("http://127.0.0.1:8080");
+    answers[6] = await solveIdor(
+      String(ready).match(/http:\/\/127\.0\.0\.1:\d+/)[0],
+    );
     assert.equal(Object.keys(answers).length, 10);
     assert.equal(new Set(Object.values(answers)).size, 10);
     for (const [id, flag] of Object.entries(answers)) {

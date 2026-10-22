@@ -49,14 +49,14 @@ node scripts/verify-pcap.mjs
 
 `npm test`는 10개 자료의 실제 풀이, 가입·로그인·로그아웃, 잘못된 FLAG, 중복·동시 제출, 인가 변경, 사용자 분리, 해설·문서 권한, 제출 제한을 검증합니다. 테스트는 메모리 SQLite와 일시적인 006 HTTP 서버를 사용합니다. 빌드는 TypeScript 검사 후 Vite 프로덕션 파일을 생성합니다.
 
-`npm run test:live`는 **운영 계정과 기록을 생성하는 별도 검증**입니다. 운영자의 승인과 QA 계정 정리 절차를 확인한 후 실행합니다. 비밀번호·FLAG는 로그에 출력하지 않습니다. 결과와 정리할 가상 코드명은 무시된 `.local/live-results.json`에 저장됩니다. 실제 결과는 [docs/TEST-RESULTS.md](docs/TEST-RESULTS.md)에 구분합니다.
+`npm run test:live`는 **운영 계정과 기록을 생성하는 별도 검증**입니다. 운영자의 승인을 확인한 후 실행합니다. 종료 시 finally에서 해당 실행이 만든 계정만 비밀번호·코드명을 재확인해 자동 삭제하며, FK 연쇄 삭제로 관련 세션·진행·제출·힌트도 삭제합니다. 비밀번호·FLAG는 로그에 출력하지 않습니다. 결과와 계정 정리 상태는 무시된 `.local/live-results.json`에 저장됩니다. 실제 결과는 [docs/TEST-RESULTS.md](docs/TEST-RESULTS.md)에 구분합니다.
 
 ## 디렉터리
 
 ```text
 frontend/src/          React 화면과 반응형 스타일
 backend/               Web Request API, catalog, 검증 해시, SQLite/REST 저장소
-api/[...path].mjs      Vercel → Supabase Edge 프록시
+api/gateway.mjs        Vercel → Supabase Edge 프록시 (명시적 /api/* rewrite)
 public/evidence/       9개 문제의 공개 분석 자료 (001·002 포함)
 challenges/idor/       격리 IDOR 실습 전용 서버와 가상 문서
 challenges/static/     정적 자료 Docker 서버
