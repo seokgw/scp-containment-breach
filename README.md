@@ -8,6 +8,7 @@
 - 저장소: https://github.com/seokgw/scp-containment-breach
 - 총점 2,250점 / 보안 인가 LEVEL 0–3
 - 코드명·비밀번호 로그인, 진행 저장, 세 단계 힌트, 정답 후 해설·기밀문서, 랭킹, ACT I 엔딩
+- 첫 접속에는 기지 복도 이미지를 사용하는 소개·로그인 페이지를 표시합니다. 로그인·회원가입 완료 후 기존 통제 대시보드로 진입하고, 로그아웃하면 소개 페이지로 돌아옵니다. 유효한 세션이 있으면 기존 조사 화면을 유지합니다.
 - React + TypeScript + Vite / Node.js Express 로컬 API / Supabase Postgres + Edge Function / Vercel 웹·API 프록시
 
 ## 설치와 실행

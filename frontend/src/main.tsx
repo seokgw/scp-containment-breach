@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import "./styles.css";
+import { Intro } from "./Intro";
 type Doc = {
   id: string;
   title: string;
@@ -163,696 +164,736 @@ function App() {
   const clearance = me?.clearance || 0;
   return (
     <div className="app">
-      <aside className={mobile ? "sidebar open" : "sidebar"}>
-        <a className="brand" href="#overview" aria-label="SCP 재단 홈">
-          <span className="brand-mark">
-            <Shield size={28} />
-          </span>
-          <span>
-            SCP FOUNDATION<small>SECURE. CONTAIN. PROTECT.</small>
-          </span>
-        </a>
-        <div className="sidebar-label">
-          SITE ██-17 <span>INTERNAL NETWORK</span>
-        </div>
-        <nav>
-          {nav.map(([id, label, Icon]) => (
-            <button
-              key={id}
-              className={page === id ? "nav-item active" : "nav-item"}
-              onClick={() => go(id)}
-            >
-              <Icon size={18} />
-              {label}
-              {id === "missions" && <span className="nav-count">10</span>}
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="connection">
-            <i /> 비상 네트워크 연결됨
-          </div>
-          <div className="agent-mini">
-            <div className="avatar">
-              <UserRound size={18} />
+      {me ? (
+        <>
+          <aside className={mobile ? "sidebar open" : "sidebar"}>
+            <a className="brand" href="#overview" aria-label="SCP 재단 홈">
+              <span className="brand-mark">
+                <Shield size={28} />
+              </span>
+              <span>
+                SCP FOUNDATION<small>SECURE. CONTAIN. PROTECT.</small>
+              </span>
+            </a>
+            <div className="sidebar-label">
+              SITE ██-17 <span>INTERNAL NETWORK</span>
             </div>
-            <div>
-              <b>{me?.user.codename || "미등록 요원"}</b>
-              <small>SECURITY LEVEL {clearance}</small>
+            <nav>
+              {nav.map(([id, label, Icon]) => (
+                <button
+                  key={id}
+                  className={page === id ? "nav-item active" : "nav-item"}
+                  onClick={() => go(id)}
+                >
+                  <Icon size={18} />
+                  {label}
+                  {id === "missions" && <span className="nav-count">10</span>}
+                </button>
+              ))}
+            </nav>
+            <div className="sidebar-bottom">
+              <div className="connection">
+                <i /> 비상 네트워크 연결됨
+              </div>
+              <div className="agent-mini">
+                <div className="avatar">
+                  <UserRound size={18} />
+                </div>
+                <div>
+                  <b>{me?.user.codename || "미등록 요원"}</b>
+                  <small>SECURITY LEVEL {clearance}</small>
+                </div>
+                {me ? (
+                  <button
+                    className="icon-button"
+                    aria-label="로그아웃"
+                    onClick={async () => {
+                      try {
+                        await api("/auth/logout", {});
+                        setMe(null);
+                        setSelected(null);
+                        go("overview");
+                      } catch (e) {
+                        setError((e as Error).message);
+                      }
+                    }}
+                  >
+                    <LogOut size={16} />
+                  </button>
+                ) : (
+                  <button
+                    className="icon-button"
+                    aria-label="로그인"
+                    onClick={() => setAuth("login")}
+                  >
+                    <ArrowRight size={18} />
+                  </button>
+                )}
+              </div>
             </div>
-            {me ? (
-              <button
-                className="icon-button"
-                aria-label="로그아웃"
-                onClick={async () => {
-                  try {
-                    await api("/auth/logout", {});
-                    setMe(null);
-                    setSelected(null);
-                    go("overview");
-                  } catch (e) {
-                    setError((e as Error).message);
-                  }
-                }}
-              >
-                <LogOut size={16} />
-              </button>
-            ) : (
-              <button
-                className="icon-button"
-                aria-label="로그인"
-                onClick={() => setAuth("login")}
-              >
-                <ArrowRight size={18} />
-              </button>
-            )}
-          </div>
-        </div>
-      </aside>
-      <div className="workspace">
-        <header className="topbar">
-          <div>
-            <button
-              className="icon-button mobile-menu"
-              aria-label="메뉴 열기"
-              onClick={() => setMobile(!mobile)}
-            >
-              <Menu size={20} />
-            </button>
-            <span className="breadcrumb">
-              FOUNDATION INTRANET <ChevronRight size={12} />
-              <b>{nav.find((n) => n[0] === page)?.[1] || "통제 대시보드"}</b>
-            </span>
-          </div>
-          <div className="topbar-right">
-            <span className="live-dot" /> 비상 대응 프로토콜 가동{" "}
-            <span className="level-tag">
-              <LockKeyhole size={12} /> LEVEL {clearance}
-            </span>
-          </div>
-        </header>
-        <main>
-          <div className="alert-strip">
-            <span>
-              <Radio size={15} /> SITE-WIDE ALERT
-            </span>
-            <p>
-              제██-17 기지 격리 실패 발생 · 모든 인원은 비상 대응 절차를
-              따르십시오.
-            </p>
-            <b>CODE RED</b>
-          </div>
-          {error && (
-            <div className="error-banner" role="alert">
-              {error}
-              <button
-                className="icon-button"
-                onClick={() => setError("")}
-                aria-label="알림 닫기"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          )}
-          {!catalog ? (
-            <div className="panel loading">
-              보안 네트워크 연결 중…
+          </aside>
+          <div className="workspace">
+            <header className="topbar">
+              <div>
+                <button
+                  className="icon-button mobile-menu"
+                  aria-label="메뉴 열기"
+                  onClick={() => setMobile(!mobile)}
+                >
+                  <Menu size={20} />
+                </button>
+                <span className="breadcrumb">
+                  FOUNDATION INTRANET <ChevronRight size={12} />
+                  <b>
+                    {nav.find((n) => n[0] === page)?.[1] || "통제 대시보드"}
+                  </b>
+                </span>
+              </div>
+              <div className="topbar-right">
+                <span className="live-dot" /> 비상 대응 프로토콜 가동{" "}
+                <span className="level-tag">
+                  <LockKeyhole size={12} /> LEVEL {clearance}
+                </span>
+              </div>
+            </header>
+            <main>
+              <div className="alert-strip">
+                <span>
+                  <Radio size={15} /> SITE-WIDE ALERT
+                </span>
+                <p>
+                  제██-17 기지 격리 실패 발생 · 모든 인원은 비상 대응 절차를
+                  따르십시오.
+                </p>
+                <b>CODE RED</b>
+              </div>
               {error && (
-                <button onClick={() => location.reload()}>다시 연결</button>
+                <div className="error-banner" role="alert">
+                  {error}
+                  <button
+                    className="icon-button"
+                    onClick={() => setError("")}
+                    aria-label="알림 닫기"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
               )}
-            </div>
-          ) : selected ? (
-            <ChallengeView
-              key={selected.id}
-              c={selected}
-              me={me!}
-              refresh={refresh}
-              back={() => setSelected(null)}
-              ending={() => setShowEnding(true)}
-            />
-          ) : (
-            <>
-              {page === "overview" && (
+              {!catalog ? (
+                <div className="panel loading">
+                  보안 네트워크 연결 중…
+                  {error && (
+                    <button onClick={() => location.reload()}>다시 연결</button>
+                  )}
+                </div>
+              ) : selected ? (
+                <ChallengeView
+                  key={selected.id}
+                  c={selected}
+                  me={me!}
+                  refresh={refresh}
+                  back={() => setSelected(null)}
+                  ending={() => setShowEnding(true)}
+                />
+              ) : (
                 <>
-                  <div className="page-kicker">
-                    <span>EMERGENCY OPERATIONS CENTER</span>
-                    <span>2026.10.22 / INCIDENT 03:17 KST</span>
-                  </div>
-                  <section className="hero">
-                    <div className="hero-copy">
-                      <div className="status-pill">
-                        <i /> CONTAINMENT BREACH DETECTED
-                      </div>
-                      <h1>
-                        격리는 실패했다.
-                        <br />
-                        <span>기록은 남아 있다.</span>
-                      </h1>
-                      <p>
-                        누군가 문을 열었다. 그리고 흔적을 지웠다.
-                        <br />
-                        정보보안 분석관 K-17, 지금부터 사건을 재구성하라.
-                      </p>
-                      <button className="primary" onClick={start}>
-                        조사 임무 시작 <ArrowRight size={17} />
-                      </button>
-                      <small className="hero-note">
-                        ACT I · 10개의 조사 임무 · 입문자를 위한 보안 워게임
-                      </small>
-                    </div>
-                    <div
-                      className="hero-visual"
-                      aria-label="기지 격리 상태 도식"
-                    >
-                      <div className="radar">
-                        <div className="radar-ring ring-one" />
-                        <div className="radar-ring ring-two" />
-                        <div className="radar-cross" />
-                        <Shield size={78} strokeWidth={1} />
-                        <span className="radar-coordinate top">
-                          SECTOR 17 / SIGNAL LOST
-                        </span>
-                        <span className="radar-coordinate bottom">
-                          7 CONTAINMENT FAILURES
-                        </span>
-                        {Array.from({ length: 7 }, (_, i) => (
-                          <i key={i} className={"radar-dot dot-" + i} />
-                        ))}
-                      </div>
-                      <div className="visual-label">
-                        CONTAINMENT STATUS <b>CRITICAL</b>
-                      </div>
-                    </div>
-                  </section>
-                  <section className="stats-grid">
-                    <Stat
-                      label="전체 격리 개체"
-                      value="12"
-                      unit="ENTITIES"
-                      icon={<Shield />}
-                    />
-                    <Stat
-                      label="격리 실패"
-                      value="07"
-                      unit="BREACHED"
-                      danger
-                      icon={<Activity />}
-                    />
-                    <Stat
-                      label="중앙 통제 시스템"
-                      value="OFFLINE"
-                      unit="CONNECTION LOST"
-                      danger
-                      icon={<Radio />}
-                    />
-                    <Stat
-                      label="내 보안 인가"
-                      value={"LEVEL " + clearance}
-                      unit={
-                        me
-                          ? me.user.codename.toUpperCase()
-                          : "ACCESS RESTRICTED"
-                      }
-                      icon={<Fingerprint />}
-                    />
-                  </section>
-                  <div className="dashboard-grid">
-                    <section className="panel mission-panel">
-                      <SectionTitle
-                        kicker="CURRENT OPERATION"
-                        title="조사 구역"
-                        right={
-                          <button
-                            className="text-button"
-                            onClick={() => go("missions")}
-                          >
-                            전체 임무 <ArrowRight size={14} />
-                          </button>
-                        }
-                      />
-                      <div className="chapter-stack">
-                        {catalog.chapters.map((ch) => (
-                          <ChapterCard
-                            key={ch.id}
-                            ch={ch}
-                            me={me}
-                            onClick={() => {
-                              go("missions");
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </section>
-                    <section className="panel log-panel">
-                      <SectionTitle
-                        kicker="SYSTEM EVENT LOG"
-                        title="비상 시스템 로그"
-                        right={
-                          <span className="tiny-red">
-                            <i /> INCIDENT RECORD
-                          </span>
-                        }
-                      />
-                      <div className="terminal-log">
-                        <p className="terminal-intro">
-                          site17@emergency:~$ tail incident.log
-                        </p>
-                        {[
-                          ["03:17:02", "중앙 제어 시스템 오류", "ERR"],
-                          ["03:17:08", "SCP-173 격리 구역 응답 없음", "WARN"],
-                          ["03:17:15", "미인가 접근 감지", "ERR"],
-                          ["03:17:21", "CCTV 연결 종료", "ERR"],
-                          ["03:17:34", "관리자 명령 실행", "WARN"],
-                        ].map(([time, text, kind]) => (
-                          <div className="log-row" key={time}>
-                            <time>{time}</time>
-                            <span
-                              className={
-                                kind === "ERR" ? "log-err" : "log-warn"
-                              }
-                            >
-                              [{kind}]
-                            </span>
-                            <p>{text}</p>
-                          </div>
-                        ))}
-                        <div className="log-message">
-                          &gt; 격리 실패는 사고가 아니다.
-                          <br />
-                          &gt; 누군가 문을 열었다.
-                          <span className="cursor">▊</span>
-                        </div>
-                      </div>
-                      <div className="log-footer">
-                        <LockKeyhole size={13} /> 원본 로그 복원 필요{" "}
-                        <span>5 EVENTS</span>
-                      </div>
-                    </section>
-                  </div>
-                  <section className="progress-banner">
-                    <div>
-                      <span className="square-icon">
-                        <BookOpen size={22} />
-                      </span>
-                      <div>
-                        <b>사건의 첫 번째 장을 열어라.</b>
-                        <p>
-                          10개의 증거를 연결해 PROJECT BLACK VEIL의 흔적을
-                          추적하세요.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="progress-summary">
-                      <b>
-                        {me?.solved.length || 0}
-                        <span> / 10 임무 완료</span>
-                      </b>
-                      <div className="progress-track">
-                        <i
-                          style={{ width: `${(me?.solved.length || 0) * 10}%` }}
-                        />
-                      </div>
-                    </div>
-                  </section>
-                </>
-              )}
-              {page === "briefing" && (
-                <>
-                  <PageTitle
-                    kicker="OPERATION BRIEFING"
-                    title="기지 제██-17 격리 실패 사건"
-                    description="이것은 단순한 시스템 장애가 아니다. 남겨진 증거를 따라 사건을 조사하라."
-                  />
-                  <section className="panel briefing">
-                    <div className="classified-label">
-                      TOP SECRET / EYES ONLY
-                    </div>
-                    <h2>정보보안 분석관 K-17에게</h2>
-                    <p>
-                      2026년 10월 22일 03시 17분, 전체 12개 격리 구역 중 7개
-                      구역의 통제 시스템이 종료되었습니다. 감시 카메라는 멈췄고,
-                      관리자 명령 기록은 지워졌습니다.
-                    </p>
-                    <blockquote>
-                      “격리 실패는 사고가 아니다.”
-                      <br />
-                      “누군가 문을 열었다.”
-                    </blockquote>
-                    <p>
-                      웹 소스와 통신, 파일, 로그를 분석해 실제 증거를
-                      복원하세요. 각 임무에서 찾은 FLAG를 제출하면 기밀문서와
-                      다음 조사 구역이 해금됩니다.
-                    </p>
-                    <dl className="detail-grid">
-                      <div>
-                        <dt>코드명</dt>
-                        <dd>{me?.user.codename || "등록 대기"}</dd>
-                      </div>
-                      <div>
-                        <dt>소속</dt>
-                        <dd>재단 정보보안 분석팀</dd>
-                      </div>
-                      <div>
-                        <dt>배치 시설</dt>
-                        <dd>SITE ██-17</dd>
-                      </div>
-                      <div>
-                        <dt>보안 인가</dt>
-                        <dd>LEVEL {clearance}</dd>
-                      </div>
-                    </dl>
-                    <p className="muted">
-                      허가된 게임 자료와 격리 실습 환경만 조사하세요. 운영
-                      사이트를 공격할 필요는 없습니다. 006 IDOR 임무는 로컬
-                      Docker 실습을 사용합니다.
-                    </p>
-                    <button
-                      className="primary"
-                      onClick={() =>
-                        me ? go("missions") : setAuth("register")
-                      }
-                    >
-                      브리핑 확인 · 조사 시작 <ArrowRight size={16} />
-                    </button>
-                  </section>
-                </>
-              )}
-              {page === "missions" && (
-                <>
-                  <PageTitle
-                    kicker="ACT I / INVESTIGATION"
-                    title="조사 임무"
-                    description="작은 단서부터 시작하세요. 모든 임무에 세 단계의 힌트가 제공됩니다."
-                  />
-                  <div className="mission-legend">
-                    <span>
-                      <i className="legend-dot green" /> AVAILABLE
-                    </span>
-                    <span>
-                      <Check size={13} /> COMPLETED
-                    </span>
-                    <span>
-                      <LockKeyhole size={13} /> LOCKED
-                    </span>
-                    <b>{me?.score || 0} / 2,250 PT</b>
-                  </div>
-                  {catalog.chapters.map((ch) => (
-                    <section className="chapter-section" key={ch.id}>
-                      <div className="chapter-heading">
-                        <span>CHAPTER 0{ch.id}</span>
-                        <h2>{ch.title}</h2>
-                        <small>
-                          LEVEL {ch.requiredClearance} →{" "}
-                          {ch.requiredClearance + 1}
-                        </small>
-                      </div>
-                      <div className="challenge-grid">
-                        {catalog.challenges
-                          .filter((c) => c.chapterId === ch.id)
-                          .map((c) => {
-                            const locked = clearance < ch.requiredClearance,
-                              solved = me?.solved.includes(c.id);
-                            return (
-                              <button
-                                className={
-                                  "challenge-card " +
-                                  (locked ? "locked" : solved ? "solved" : "")
-                                }
-                                key={c.id}
-                                onClick={() => openChallenge(c)}
-                                aria-label={`${num(c.id)} ${c.title}${locked ? " 잠김" : ""}`}
-                              >
-                                <div className="challenge-top">
-                                  <span>MISSION {num(c.id)}</span>
-                                  {locked ? (
-                                    <LockKeyhole size={16} />
-                                  ) : solved ? (
-                                    <Check size={18} />
-                                  ) : (
-                                    <ArrowRight size={16} />
-                                  )}
-                                </div>
-                                <h3>{c.title}</h3>
-                                <p>{c.category}</p>
-                                <div className="challenge-bottom">
-                                  <span>
-                                    {c.difficultyLabel}{" "}
-                                    <span className="difficulty-dots">
-                                      {"▰".repeat(c.difficulty)}
-                                      {"▱".repeat(3 - c.difficulty)}
-                                    </span>
-                                  </span>
-                                  <b>
-                                    {c.points} <small>PT</small>
-                                  </b>
-                                </div>
-                                {solved && (
-                                  <span className="solved-label">
-                                    COMPLETED
-                                  </span>
-                                )}
-                              </button>
-                            );
-                          })}
-                      </div>
-                    </section>
-                  ))}
-                  <SectionTitle
-                    kicker="FUTURE OPERATIONS"
-                    title="다음 조사 기록"
-                  />
-                  <div className="future-acts">
-                    {catalog.acts
-                      .filter((a) => a.releaseStatus === "planned")
-                      .map((a) => (
-                        <div className="panel future-act" key={a.id}>
-                          <LockKeyhole size={22} />
-                          <span>
-                            ACT {a.id} / {a.range}
-                          </span>
-                          <h3>{a.title}</h3>
-                          <p>{a.difficulty}</p>
-                          <small>준비 중 · 현재 미구현</small>
-                        </div>
-                      ))}
-                  </div>
-                </>
-              )}
-              {page === "documents" && (
-                <>
-                  <PageTitle
-                    kicker="CLASSIFIED ARCHIVE"
-                    title="SCP 기밀문서"
-                    description="임무에서 검증한 증거만 열람할 수 있습니다. 각 문서는 본 게임을 위해 작성한 창작 기록입니다."
-                  />
-                  <div className="documents-grid">
-                    {catalog.challenges.map((c) => {
-                      const unlocked = me?.documents.find(
-                        (d) => d.id === "DOC-" + num(c.id),
-                      );
-                      return (
-                        <button
-                          key={c.id}
-                          className={
-                            "panel document-card " + (!unlocked ? "locked" : "")
-                          }
-                          onClick={() =>
-                            unlocked
-                              ? setDoc(unlocked)
-                              : setError(
-                                  "관련 임무를 완료하면 문서가 해금됩니다.",
-                                )
-                          }
-                        >
-                          <div>
-                            <FileText size={25} />
-                            {unlocked ? (
-                              <span className="green-text">DECLASSIFIED</span>
-                            ) : (
-                              <LockKeyhole size={16} />
-                            )}
-                          </div>
-                          <small>DOC-{num(c.id)}</small>
-                          <h3>{unlocked?.title || "[접근 권한 부족]"}</h3>
-                          <p>
-                            {unlocked
-                              ? unlocked.scp
-                              : `MISSION ${num(c.id)} 완료 필요`}
-                          </p>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-              {page === "rankings" && (
-                <>
-                  <PageTitle
-                    kicker="PERSONNEL LEADERBOARD"
-                    title="요원 랭킹"
-                    description="점수 내림차순, 동점은 마지막 정답 제출이 빠른 순입니다. 공개 식별 정보는 코드명뿐입니다."
-                  />
-                  <section className="panel ranking-panel">
-                    <div className="ranking-row ranking-head">
-                      <span>RANK</span>
-                      <span>AGENT CODENAME</span>
-                      <span>SOLVED</span>
-                      <span>SCORE</span>
-                    </div>
-                    {rankings.length ? (
-                      rankings.map((r, i) => (
-                        <div
-                          key={r.codename}
-                          className={
-                            "ranking-row " +
-                            (r.codename === me?.user.codename ? "my-rank" : "")
-                          }
-                        >
-                          <b>{String(i + 1).padStart(2, "0")}</b>
-                          <span>
-                            <UserRound size={16} />
-                            {r.codename}
-                            {r.codename === me?.user.codename && (
-                              <small>YOU</small>
-                            )}
-                          </span>
-                          <span>{r.solved} / 10</span>
-                          <b>{Number(r.score).toLocaleString()} PT</b>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="empty-state">
-                        <Trophy size={35} />
-                        <h3>첫 번째 조사관을 기다립니다.</h3>
-                        <p>
-                          요원을 등록하고 증거를 검증해 랭킹에 이름을 올리세요.
-                        </p>
-                      </div>
-                    )}
-                  </section>
-                </>
-              )}
-              {page === "profile" && (
-                <>
-                  <PageTitle
-                    kicker="AGENT PERSONNEL FILE"
-                    title="요원 프로필"
-                    description="보안 인가와 진행 기록은 서버에서 검증하고 저장합니다."
-                  />
-                  {me ? (
+                  {page === "overview" && (
                     <>
-                      <div className="profile-grid">
-                        <section className="panel agent-card">
-                          <Fingerprint size={52} />
-                          <span>FOUNDATION SECURITY CLEARANCE</span>
-                          <h2>{me.user.codename}</h2>
-                          <strong>LEVEL {clearance}</strong>
-                          <p>정보보안 분석관 / SITE ██-17</p>
-                          <small>
-                            등록일{" "}
-                            {new Date(me.user.createdAt).toLocaleDateString(
-                              "ko-KR",
-                            )}
+                      <div className="page-kicker">
+                        <span>EMERGENCY OPERATIONS CENTER</span>
+                        <span>2026.10.22 / INCIDENT 03:17 KST</span>
+                      </div>
+                      <section className="hero">
+                        <div className="hero-copy">
+                          <div className="status-pill">
+                            <i /> CONTAINMENT BREACH DETECTED
+                          </div>
+                          <h1>
+                            격리는 실패했다.
+                            <br />
+                            <span>기록은 남아 있다.</span>
+                          </h1>
+                          <p>
+                            누군가 문을 열었다. 그리고 흔적을 지웠다.
+                            <br />
+                            정보보안 분석관 K-17, 지금부터 사건을 재구성하라.
+                          </p>
+                          <button className="primary" onClick={start}>
+                            조사 임무 시작 <ArrowRight size={17} />
+                          </button>
+                          <small className="hero-note">
+                            ACT I · 10개의 조사 임무 · 입문자를 위한 보안 워게임
                           </small>
+                        </div>
+                        <div
+                          className="hero-visual"
+                          aria-label="기지 격리 상태 도식"
+                        >
+                          <div className="radar">
+                            <div className="radar-ring ring-one" />
+                            <div className="radar-ring ring-two" />
+                            <div className="radar-cross" />
+                            <Shield size={78} strokeWidth={1} />
+                            <span className="radar-coordinate top">
+                              SECTOR 17 / SIGNAL LOST
+                            </span>
+                            <span className="radar-coordinate bottom">
+                              7 CONTAINMENT FAILURES
+                            </span>
+                            {Array.from({ length: 7 }, (_, i) => (
+                              <i key={i} className={"radar-dot dot-" + i} />
+                            ))}
+                          </div>
+                          <div className="visual-label">
+                            CONTAINMENT STATUS <b>CRITICAL</b>
+                          </div>
+                        </div>
+                      </section>
+                      <section className="stats-grid">
+                        <Stat
+                          label="전체 격리 개체"
+                          value="12"
+                          unit="ENTITIES"
+                          icon={<Shield />}
+                        />
+                        <Stat
+                          label="격리 실패"
+                          value="07"
+                          unit="BREACHED"
+                          danger
+                          icon={<Activity />}
+                        />
+                        <Stat
+                          label="중앙 통제 시스템"
+                          value="OFFLINE"
+                          unit="CONNECTION LOST"
+                          danger
+                          icon={<Radio />}
+                        />
+                        <Stat
+                          label="내 보안 인가"
+                          value={"LEVEL " + clearance}
+                          unit={
+                            me
+                              ? me.user.codename.toUpperCase()
+                              : "ACCESS RESTRICTED"
+                          }
+                          icon={<Fingerprint />}
+                        />
+                      </section>
+                      <div className="dashboard-grid">
+                        <section className="panel mission-panel">
+                          <SectionTitle
+                            kicker="CURRENT OPERATION"
+                            title="조사 구역"
+                            right={
+                              <button
+                                className="text-button"
+                                onClick={() => go("missions")}
+                              >
+                                전체 임무 <ArrowRight size={14} />
+                              </button>
+                            }
+                          />
+                          <div className="chapter-stack">
+                            {catalog.chapters.map((ch) => (
+                              <ChapterCard
+                                key={ch.id}
+                                ch={ch}
+                                me={me}
+                                onClick={() => {
+                                  go("missions");
+                                }}
+                              />
+                            ))}
+                          </div>
                         </section>
-                        <section className="panel profile-progress">
-                          <Stat
-                            label="획득 점수"
-                            value={me.score.toLocaleString()}
-                            unit="/ 2,250 PT"
+                        <section className="panel log-panel">
+                          <SectionTitle
+                            kicker="SYSTEM EVENT LOG"
+                            title="비상 시스템 로그"
+                            right={
+                              <span className="tiny-red">
+                                <i /> INCIDENT RECORD
+                              </span>
+                            }
                           />
-                          <Stat
-                            label="해결 임무"
-                            value={String(me.solved.length)}
-                            unit="/ 10 MISSIONS"
-                          />
-                          {catalog.chapters.map((ch) => (
-                            <ChapterCard
-                              key={ch.id}
-                              ch={ch}
-                              me={me}
-                              onClick={() => go("missions")}
-                            />
-                          ))}
+                          <div className="terminal-log">
+                            <p className="terminal-intro">
+                              site17@emergency:~$ tail incident.log
+                            </p>
+                            {[
+                              ["03:17:02", "중앙 제어 시스템 오류", "ERR"],
+                              [
+                                "03:17:08",
+                                "SCP-173 격리 구역 응답 없음",
+                                "WARN",
+                              ],
+                              ["03:17:15", "미인가 접근 감지", "ERR"],
+                              ["03:17:21", "CCTV 연결 종료", "ERR"],
+                              ["03:17:34", "관리자 명령 실행", "WARN"],
+                            ].map(([time, text, kind]) => (
+                              <div className="log-row" key={time}>
+                                <time>{time}</time>
+                                <span
+                                  className={
+                                    kind === "ERR" ? "log-err" : "log-warn"
+                                  }
+                                >
+                                  [{kind}]
+                                </span>
+                                <p>{text}</p>
+                              </div>
+                            ))}
+                            <div className="log-message">
+                              &gt; 격리 실패는 사고가 아니다.
+                              <br />
+                              &gt; 누군가 문을 열었다.
+                              <span className="cursor">▊</span>
+                            </div>
+                          </div>
+                          <div className="log-footer">
+                            <LockKeyhole size={13} /> 원본 로그 복원 필요{" "}
+                            <span>5 EVENTS</span>
+                          </div>
                         </section>
                       </div>
-                      <div className="panel profile-docs">
-                        <h3>해금한 문서 · {me.documents.length}</h3>
-                        {me.documents.length ? (
-                          me.documents.map((d) => (
-                            <button
-                              className="document-link"
-                              key={d.id}
-                              onClick={() => setDoc(d)}
-                            >
-                              <FileText size={16} />
-                              {d.id} / {d.title}
-                              <ChevronRight size={16} />
-                            </button>
-                          ))
-                        ) : (
-                          <p className="muted">
-                            첫 임무를 완료하면 조사 기록이 해금됩니다.
-                          </p>
-                        )}
-                        {me.completed && (
-                          <button
-                            className="primary"
-                            onClick={() => setShowEnding(true)}
-                          >
-                            ACT I 엔딩 다시 보기 <ArrowRight size={16} />
-                          </button>
-                        )}
+                      <section className="progress-banner">
+                        <div>
+                          <span className="square-icon">
+                            <BookOpen size={22} />
+                          </span>
+                          <div>
+                            <b>사건의 첫 번째 장을 열어라.</b>
+                            <p>
+                              10개의 증거를 연결해 PROJECT BLACK VEIL의 흔적을
+                              추적하세요.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="progress-summary">
+                          <b>
+                            {me?.solved.length || 0}
+                            <span> / 10 임무 완료</span>
+                          </b>
+                          <div className="progress-track">
+                            <i
+                              style={{
+                                width: `${(me?.solved.length || 0) * 10}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </section>
+                    </>
+                  )}
+                  {page === "briefing" && (
+                    <>
+                      <PageTitle
+                        kicker="OPERATION BRIEFING"
+                        title="기지 제██-17 격리 실패 사건"
+                        description="이것은 단순한 시스템 장애가 아니다. 남겨진 증거를 따라 사건을 조사하라."
+                      />
+                      <section className="panel briefing">
+                        <div className="classified-label">
+                          TOP SECRET / EYES ONLY
+                        </div>
+                        <h2>정보보안 분석관 K-17에게</h2>
+                        <p>
+                          2026년 10월 22일 03시 17분, 전체 12개 격리 구역 중 7개
+                          구역의 통제 시스템이 종료되었습니다. 감시 카메라는
+                          멈췄고, 관리자 명령 기록은 지워졌습니다.
+                        </p>
+                        <blockquote>
+                          “격리 실패는 사고가 아니다.”
+                          <br />
+                          “누군가 문을 열었다.”
+                        </blockquote>
+                        <p>
+                          웹 소스와 통신, 파일, 로그를 분석해 실제 증거를
+                          복원하세요. 각 임무에서 찾은 FLAG를 제출하면
+                          기밀문서와 다음 조사 구역이 해금됩니다.
+                        </p>
+                        <dl className="detail-grid">
+                          <div>
+                            <dt>코드명</dt>
+                            <dd>{me?.user.codename || "등록 대기"}</dd>
+                          </div>
+                          <div>
+                            <dt>소속</dt>
+                            <dd>재단 정보보안 분석팀</dd>
+                          </div>
+                          <div>
+                            <dt>배치 시설</dt>
+                            <dd>SITE ██-17</dd>
+                          </div>
+                          <div>
+                            <dt>보안 인가</dt>
+                            <dd>LEVEL {clearance}</dd>
+                          </div>
+                        </dl>
+                        <p className="muted">
+                          허가된 게임 자료와 격리 실습 환경만 조사하세요. 운영
+                          사이트를 공격할 필요는 없습니다. 006 IDOR 임무는 로컬
+                          Docker 실습을 사용합니다.
+                        </p>
+                        <button
+                          className="primary"
+                          onClick={() =>
+                            me ? go("missions") : setAuth("register")
+                          }
+                        >
+                          브리핑 확인 · 조사 시작 <ArrowRight size={16} />
+                        </button>
+                      </section>
+                    </>
+                  )}
+                  {page === "missions" && (
+                    <>
+                      <PageTitle
+                        kicker="ACT I / INVESTIGATION"
+                        title="조사 임무"
+                        description="작은 단서부터 시작하세요. 모든 임무에 세 단계의 힌트가 제공됩니다."
+                      />
+                      <div className="mission-legend">
+                        <span>
+                          <i className="legend-dot green" /> AVAILABLE
+                        </span>
+                        <span>
+                          <Check size={13} /> COMPLETED
+                        </span>
+                        <span>
+                          <LockKeyhole size={13} /> LOCKED
+                        </span>
+                        <b>{me?.score || 0} / 2,250 PT</b>
+                      </div>
+                      {catalog.chapters.map((ch) => (
+                        <section className="chapter-section" key={ch.id}>
+                          <div className="chapter-heading">
+                            <span>CHAPTER 0{ch.id}</span>
+                            <h2>{ch.title}</h2>
+                            <small>
+                              LEVEL {ch.requiredClearance} →{" "}
+                              {ch.requiredClearance + 1}
+                            </small>
+                          </div>
+                          <div className="challenge-grid">
+                            {catalog.challenges
+                              .filter((c) => c.chapterId === ch.id)
+                              .map((c) => {
+                                const locked = clearance < ch.requiredClearance,
+                                  solved = me?.solved.includes(c.id);
+                                return (
+                                  <button
+                                    className={
+                                      "challenge-card " +
+                                      (locked
+                                        ? "locked"
+                                        : solved
+                                          ? "solved"
+                                          : "")
+                                    }
+                                    key={c.id}
+                                    onClick={() => openChallenge(c)}
+                                    aria-label={`${num(c.id)} ${c.title}${locked ? " 잠김" : ""}`}
+                                  >
+                                    <div className="challenge-top">
+                                      <span>MISSION {num(c.id)}</span>
+                                      {locked ? (
+                                        <LockKeyhole size={16} />
+                                      ) : solved ? (
+                                        <Check size={18} />
+                                      ) : (
+                                        <ArrowRight size={16} />
+                                      )}
+                                    </div>
+                                    <h3>{c.title}</h3>
+                                    <p>{c.category}</p>
+                                    <div className="challenge-bottom">
+                                      <span>
+                                        {c.difficultyLabel}{" "}
+                                        <span className="difficulty-dots">
+                                          {"▰".repeat(c.difficulty)}
+                                          {"▱".repeat(3 - c.difficulty)}
+                                        </span>
+                                      </span>
+                                      <b>
+                                        {c.points} <small>PT</small>
+                                      </b>
+                                    </div>
+                                    {solved && (
+                                      <span className="solved-label">
+                                        COMPLETED
+                                      </span>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                          </div>
+                        </section>
+                      ))}
+                      <SectionTitle
+                        kicker="FUTURE OPERATIONS"
+                        title="다음 조사 기록"
+                      />
+                      <div className="future-acts">
+                        {catalog.acts
+                          .filter((a) => a.releaseStatus === "planned")
+                          .map((a) => (
+                            <div className="panel future-act" key={a.id}>
+                              <LockKeyhole size={22} />
+                              <span>
+                                ACT {a.id} / {a.range}
+                              </span>
+                              <h3>{a.title}</h3>
+                              <p>{a.difficulty}</p>
+                              <small>준비 중 · 현재 미구현</small>
+                            </div>
+                          ))}
                       </div>
                     </>
-                  ) : (
-                    <section className="panel empty-state">
-                      <Fingerprint size={45} />
-                      <h3>요원 인증이 필요합니다.</h3>
-                      <button
-                        className="primary"
-                        onClick={() => setAuth("login")}
-                      >
-                        로그인 <ArrowRight size={16} />
-                      </button>
-                    </section>
+                  )}
+                  {page === "documents" && (
+                    <>
+                      <PageTitle
+                        kicker="CLASSIFIED ARCHIVE"
+                        title="SCP 기밀문서"
+                        description="임무에서 검증한 증거만 열람할 수 있습니다. 각 문서는 본 게임을 위해 작성한 창작 기록입니다."
+                      />
+                      <div className="documents-grid">
+                        {catalog.challenges.map((c) => {
+                          const unlocked = me?.documents.find(
+                            (d) => d.id === "DOC-" + num(c.id),
+                          );
+                          return (
+                            <button
+                              key={c.id}
+                              className={
+                                "panel document-card " +
+                                (!unlocked ? "locked" : "")
+                              }
+                              onClick={() =>
+                                unlocked
+                                  ? setDoc(unlocked)
+                                  : setError(
+                                      "관련 임무를 완료하면 문서가 해금됩니다.",
+                                    )
+                              }
+                            >
+                              <div>
+                                <FileText size={25} />
+                                {unlocked ? (
+                                  <span className="green-text">
+                                    DECLASSIFIED
+                                  </span>
+                                ) : (
+                                  <LockKeyhole size={16} />
+                                )}
+                              </div>
+                              <small>DOC-{num(c.id)}</small>
+                              <h3>{unlocked?.title || "[접근 권한 부족]"}</h3>
+                              <p>
+                                {unlocked
+                                  ? unlocked.scp
+                                  : `MISSION ${num(c.id)} 완료 필요`}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                  {page === "rankings" && (
+                    <>
+                      <PageTitle
+                        kicker="PERSONNEL LEADERBOARD"
+                        title="요원 랭킹"
+                        description="점수 내림차순, 동점은 마지막 정답 제출이 빠른 순입니다. 공개 식별 정보는 코드명뿐입니다."
+                      />
+                      <section className="panel ranking-panel">
+                        <div className="ranking-row ranking-head">
+                          <span>RANK</span>
+                          <span>AGENT CODENAME</span>
+                          <span>SOLVED</span>
+                          <span>SCORE</span>
+                        </div>
+                        {rankings.length ? (
+                          rankings.map((r, i) => (
+                            <div
+                              key={r.codename}
+                              className={
+                                "ranking-row " +
+                                (r.codename === me?.user.codename
+                                  ? "my-rank"
+                                  : "")
+                              }
+                            >
+                              <b>{String(i + 1).padStart(2, "0")}</b>
+                              <span>
+                                <UserRound size={16} />
+                                {r.codename}
+                                {r.codename === me?.user.codename && (
+                                  <small>YOU</small>
+                                )}
+                              </span>
+                              <span>{r.solved} / 10</span>
+                              <b>{Number(r.score).toLocaleString()} PT</b>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="empty-state">
+                            <Trophy size={35} />
+                            <h3>첫 번째 조사관을 기다립니다.</h3>
+                            <p>
+                              요원을 등록하고 증거를 검증해 랭킹에 이름을
+                              올리세요.
+                            </p>
+                          </div>
+                        )}
+                      </section>
+                    </>
+                  )}
+                  {page === "profile" && (
+                    <>
+                      <PageTitle
+                        kicker="AGENT PERSONNEL FILE"
+                        title="요원 프로필"
+                        description="보안 인가와 진행 기록은 서버에서 검증하고 저장합니다."
+                      />
+                      {me ? (
+                        <>
+                          <div className="profile-grid">
+                            <section className="panel agent-card">
+                              <Fingerprint size={52} />
+                              <span>FOUNDATION SECURITY CLEARANCE</span>
+                              <h2>{me.user.codename}</h2>
+                              <strong>LEVEL {clearance}</strong>
+                              <p>정보보안 분석관 / SITE ██-17</p>
+                              <small>
+                                등록일{" "}
+                                {new Date(me.user.createdAt).toLocaleDateString(
+                                  "ko-KR",
+                                )}
+                              </small>
+                            </section>
+                            <section className="panel profile-progress">
+                              <Stat
+                                label="획득 점수"
+                                value={me.score.toLocaleString()}
+                                unit="/ 2,250 PT"
+                              />
+                              <Stat
+                                label="해결 임무"
+                                value={String(me.solved.length)}
+                                unit="/ 10 MISSIONS"
+                              />
+                              {catalog.chapters.map((ch) => (
+                                <ChapterCard
+                                  key={ch.id}
+                                  ch={ch}
+                                  me={me}
+                                  onClick={() => go("missions")}
+                                />
+                              ))}
+                            </section>
+                          </div>
+                          <div className="panel profile-docs">
+                            <h3>해금한 문서 · {me.documents.length}</h3>
+                            {me.documents.length ? (
+                              me.documents.map((d) => (
+                                <button
+                                  className="document-link"
+                                  key={d.id}
+                                  onClick={() => setDoc(d)}
+                                >
+                                  <FileText size={16} />
+                                  {d.id} / {d.title}
+                                  <ChevronRight size={16} />
+                                </button>
+                              ))
+                            ) : (
+                              <p className="muted">
+                                첫 임무를 완료하면 조사 기록이 해금됩니다.
+                              </p>
+                            )}
+                            {me.completed && (
+                              <button
+                                className="primary"
+                                onClick={() => setShowEnding(true)}
+                              >
+                                ACT I 엔딩 다시 보기 <ArrowRight size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <section className="panel empty-state">
+                          <Fingerprint size={45} />
+                          <h3>요원 인증이 필요합니다.</h3>
+                          <button
+                            className="primary"
+                            onClick={() => setAuth("login")}
+                          >
+                            로그인 <ArrowRight size={16} />
+                          </button>
+                        </section>
+                      )}
+                    </>
                   )}
                 </>
               )}
-            </>
-          )}
-          <footer>
-            <span>
-              SCP FOUNDATION <i /> SITE ██-17 / TRAINING SYSTEM v1.0
-            </span>
-            <span>
-              SCP Wiki 기반 비공식 팬 창작 ·{" "}
-              <a
-                href="#license"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setDoc({
-                    id: "LICENSE",
-                    title: "저작자 표시 및 라이선스",
-                    scp: "SCP Wiki",
-                    objectClass: "CC BY-SA 3.0",
-                    clearance: 0,
-                    containment:
-                      "본 사이트는 SCP 재단의 비공식 팬 창작입니다. 기존 SCP-173 조각상 이미지는 사용하지 않습니다.",
-                    description:
-                      "SCP-173: Moto42 / SCP-049: Gabriel Jade, rewritten by djkaktus & Gabriel Jade / SCP-079: Unknown author (원문 표기). 각 원문 링크와 상세 표시는 저장소의 ATTRIBUTION.md를 참고하세요.",
-                    incident:
-                      "게임 시나리오·사건 기록·보안 문제는 본 프로젝트가 작성한 2차 창작이며 CC BY-SA 3.0으로 배포됩니다.",
-                    researcher: "https://scp-wiki.wikidot.com/licensing-guide",
-                  });
-                }}
-              >
-                CC BY-SA 3.0
-              </a>
-            </span>
-          </footer>
-        </main>
-      </div>
+              <footer>
+                <span>
+                  SCP FOUNDATION <i /> SITE ██-17 / TRAINING SYSTEM v1.0
+                </span>
+                <span>
+                  SCP Wiki 기반 비공식 팬 창작 ·{" "}
+                  <a
+                    href="#license"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setDoc({
+                        id: "LICENSE",
+                        title: "저작자 표시 및 라이선스",
+                        scp: "SCP Wiki",
+                        objectClass: "CC BY-SA 3.0",
+                        clearance: 0,
+                        containment:
+                          "본 사이트는 SCP 재단의 비공식 팬 창작입니다. 기존 SCP-173 조각상 이미지는 사용하지 않습니다.",
+                        description:
+                          "SCP-173: Moto42 / SCP-049: Gabriel Jade, rewritten by djkaktus & Gabriel Jade / SCP-079: Unknown author (원문 표기). 각 원문 링크와 상세 표시는 저장소의 ATTRIBUTION.md를 참고하세요.",
+                        incident:
+                          "게임 시나리오·사건 기록·보안 문제는 본 프로젝트가 작성한 2차 창작이며 CC BY-SA 3.0으로 배포됩니다.",
+                        researcher:
+                          "https://scp-wiki.wikidot.com/licensing-guide",
+                      });
+                    }}
+                  >
+                    CC BY-SA 3.0
+                  </a>
+                </span>
+              </footer>
+            </main>
+          </div>
+        </>
+      ) : (
+        <Intro
+          onRegister={() => {
+            setError("");
+            setAuth("register");
+          }}
+          onLogin={async (codename, password) => {
+            await api("/auth/login", { codename, password });
+            const user = await refresh();
+            if (!user)
+              throw new Error(
+                "로그인 정보를 확인하지 못했습니다. 다시 시도하세요.",
+              );
+            setError("");
+            go("overview");
+          }}
+        />
+      )}
       {auth && (
         <div className="modal-backdrop" onClick={() => !busy && setAuth(false)}>
           <section
@@ -888,9 +929,12 @@ function App() {
                     codename: data.get("codename"),
                     password: data.get("password"),
                   });
-                  await refresh();
+                  if (!(await refresh()))
+                    throw new Error(
+                      "계정 정보를 확인하지 못했습니다. 다시 시도하세요.",
+                    );
                   setAuth(false);
-                  go("briefing");
+                  go("overview");
                 } catch (err) {
                   setError((err as Error).message);
                 } finally {
