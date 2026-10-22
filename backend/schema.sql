@@ -2,7 +2,7 @@
 create schema scp_game;
 revoke all on schema scp_game from public, anon, authenticated;
 grant usage on schema scp_game to service_role;
-create table scp_game.users (id uuid primary key, codename text unique not null check(codename ~ '^[a-z0-9_-]{3,24}$'), password_hash text not null, created_at timestamptz not null default now());
+create table scp_game.users (id uuid primary key, codename text unique not null check(codename ~ '^[a-z0-9_-]{3,24}$'), password_hash text not null, role text not null default 'agent' check(role in ('agent','admin')), created_at timestamptz not null default now());
 create table scp_game.chapters (id integer primary key, act_id integer not null, title text not null, required_clearance integer not null, release_status text not null check(release_status in ('released','planned')));
 create table scp_game.challenges (id integer primary key, chapter_id integer not null references scp_game.chapters(id), title text not null, points integer not null check(points>0), difficulty integer not null check(difficulty between 1 and 10), release_status text not null check(release_status in ('released','planned')));
 create table scp_game.sessions (token_hash text primary key, user_id uuid not null references scp_game.users(id) on delete cascade, expires_at timestamptz not null);
@@ -40,6 +40,7 @@ end; $$;
 create function scp_game.rankings() returns table(codename text,score bigint,solved bigint,last_solved timestamptz) language sql stable security invoker set search_path='' as $$
   select u.codename,coalesce(sum(c.points),0)::bigint,count(p.challenge_id),max(p.solved_at)
   from scp_game.users u left join scp_game.progress p on p.user_id=u.id left join scp_game.challenges c on c.id=p.challenge_id and c.release_status='released'
+  where u.role='agent'
   group by u.id order by coalesce(sum(c.points),0) desc,max(p.solved_at) asc nulls last,u.codename asc limit 50;
 $$;
 revoke all on all functions in schema scp_game from public,anon,authenticated;

@@ -117,6 +117,7 @@ export function createHandler(
               id: crypto.randomUUID(),
               codename,
               password_hash,
+              role: "agent",
               created_at: new Date().toISOString(),
             });
           } catch (e) {
@@ -181,11 +182,17 @@ export function createHandler(
           `${sessionName}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0${secure ? "; Secure" : ""}`;
         return json({ deleted: true });
       }
+      const isAdmin = user.role === "admin";
+      if (path === "/admin/overview" && method === "GET") {
+        if (!isAdmin) fail(403, "관리자 권한이 필요합니다.");
+        return json({ role: "admin", publishedChallenges: challenges.length });
+      }
       const solvedRows = await repo.select("progress", { user_id: user.id }),
         progress = progressOf(solvedRows);
       if (path === "/me" && method === "GET")
         return json({
-          user: { codename: user.codename, createdAt: user.created_at },
+          user: { codename: user.codename, createdAt: user.created_at, role: isAdmin ? "admin" : "agent" },
+          accessClearance: isAdmin ? 3 : progress.clearance,
           ...progress,
           hints: await repo.select("hints", { user_id: user.id }).then((rows) =>
             rows.map(({ challenge_id, level }) => ({
@@ -194,9 +201,9 @@ export function createHandler(
             })),
           ),
           documents: challenges
-            .filter((c) => progress.solved.includes(c.id))
+            .filter((c) => isAdmin || progress.solved.includes(c.id))
             .map((c) => c.document),
-          ending: progress.completed ? ending : null,
+          ending: isAdmin || progress.completed ? ending : null,
         });
       const match = path.match(
         /^\/challenges\/(\d+)(?:\/(submit|hint|solution|document))?$/,
@@ -209,7 +216,7 @@ export function createHandler(
         );
       if (!c) fail(404, "공개되지 않은 임무입니다.");
       const chapter = chapters.find((ch) => ch.id === c.chapterId);
-      if (progress.clearance < chapter.requiredClearance)
+      if (!isAdmin && progress.clearance < chapter.requiredClearance)
         fail(403, "이전 챕터를 완료해 보안 인가를 획득하세요.");
       if (!action && method === "GET") {
         const { hints, explanation, document, ...publicChallenge } = c;
@@ -219,7 +226,7 @@ export function createHandler(
         });
       }
       if (["solution", "document"].includes(action) && method === "GET") {
-        if (!progress.solved.includes(id))
+        if (!isAdmin && !progress.solved.includes(id))
           fail(403, "임무 완료 후 공개됩니다.");
         return json(
           action === "solution"

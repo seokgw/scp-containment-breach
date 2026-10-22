@@ -98,3 +98,9 @@ npx vercel@65.0.0 deploy --prod
 - [저작자 표시](ATTRIBUTION.md) · [라이선스](LICENSE)
 
 SCP Wiki 기반 비공식 팬 창작입니다. SCP 세계관을 바탕으로 한 게임 시나리오·문서·문제 자료는 CC BY-SA 3.0으로 제공합니다. SCP-173 조각상 사진은 사용하지 않습니다.
+
+## Administrator access
+
+The server reads `scp_game.users.role` on every authenticated request. Public registration always creates `agent`; there is no public role promotion endpoint. Trusted operators provision `admin` in the database using a bcrypt password hash. Credentials stay in ignored local files, never in this public repository.
+
+Admins can preview all ten released missions, hints, solutions, documents and the ACT I ending through the administrator console. Preview access does not grant completion or points. Admin accounts are excluded from the public rankings. Unreleased missions remain unavailable. Existing agents retain their original chapter gates. Existing deployments apply `backend/admin-role-patch.sql` once; fresh installs use `backend/schema.sql`. Local SQLite automatically adds the role column while retaining accounts and progress.

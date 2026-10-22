@@ -17,6 +17,8 @@ export class SQLiteRepository {
       CREATE TABLE IF NOT EXISTS hints(user_id TEXT REFERENCES users(id) ON DELETE CASCADE,challenge_id INTEGER,level INTEGER,PRIMARY KEY(user_id,challenge_id,level));
       CREATE TABLE IF NOT EXISTS submissions(id TEXT PRIMARY KEY,user_id TEXT REFERENCES users(id) ON DELETE CASCADE,challenge_id INTEGER,is_correct INTEGER,submitted_at TEXT);
       CREATE TABLE IF NOT EXISTS rate_buckets(key TEXT PRIMARY KEY,count INTEGER,expires INTEGER);`);
+    if (!this.db.prepare("PRAGMA table_info(users)").all().some(c => c.name === "role"))
+      this.db.exec("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'agent' CHECK(role IN ('agent','admin'))");
   }
   filters(table, filters) {
     if (
@@ -72,7 +74,7 @@ export class SQLiteRepository {
       .join(" ");
     return this.db
       .prepare(
-        `SELECT u.codename,coalesce(sum(CASE p.challenge_id ${cases} ELSE 0 END),0) score,count(p.challenge_id) solved,max(p.solved_at) last_solved FROM users u LEFT JOIN progress p ON p.user_id=u.id GROUP BY u.id ORDER BY score DESC,last_solved ASC NULLS LAST,u.codename ASC LIMIT 50`,
+        `SELECT u.codename,coalesce(sum(CASE p.challenge_id ${cases} ELSE 0 END),0) score,count(p.challenge_id) solved,max(p.solved_at) last_solved FROM users u LEFT JOIN progress p ON p.user_id=u.id WHERE u.role='agent' GROUP BY u.id ORDER BY score DESC,last_solved ASC NULLS LAST,u.codename ASC LIMIT 50`,
       )
       .all();
   }

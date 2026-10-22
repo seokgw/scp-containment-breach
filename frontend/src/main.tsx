@@ -70,7 +70,8 @@ type Act = {
   releaseStatus: string;
 };
 type Me = {
-  user: { codename: string; createdAt: string };
+  user: { codename: string; createdAt: string; role: "agent" | "admin" };
+  accessClearance: number;
   score: number;
   clearance: number;
   solved: number[];
@@ -153,7 +154,7 @@ function App() {
       return;
     }
     const ch = catalog?.chapters.find((ch) => ch.id === c.chapterId);
-    if (ch && me.clearance < ch.requiredClearance) {
+    if (ch && me.accessClearance < ch.requiredClearance) {
       setError("이전 챕터를 완료해 보안 인가를 획득하세요.");
       return;
     }
@@ -168,8 +169,11 @@ function App() {
     ["documents", "기밀문서", FileText],
     ["rankings", "요원 랭킹", Trophy],
     ["profile", "요원 프로필", Fingerprint],
+    ...(me?.user.role === "admin" ? [["admin", "관리자 콘솔", Shield] as const] : []),
   ] as const;
   const clearance = me?.clearance || 0;
+  const isAdmin = me?.user.role === "admin";
+  const accessClearance = me?.accessClearance ?? clearance;
   const currentZone = selected
     ? getScene(selected.id).zone
     : page === "documents"
@@ -179,7 +183,7 @@ function App() {
         : "control";
   const zone = zones[currentZone];
   function visitChapter(chapter: number) {
-    if (clearance < chapter - 1) {
+    if (accessClearance < chapter - 1) {
       setError("이전 챕터를 완료해 보안 인가를 획득하세요.");
       return;
     }
@@ -232,7 +236,7 @@ function App() {
                 </div>
                 <div>
                   <b>{me?.user.codename || "미등록 요원"}</b>
-                  <small>SECURITY LEVEL {clearance}</small>
+                  <small>{isAdmin ? "ADMIN · ALL ACCESS" : `SECURITY LEVEL ${clearance}`}</small>
                 </div>
                 {me ? (
                   <button
@@ -401,7 +405,7 @@ function App() {
                       </section>
                       <FacilityRoute
                         solved={me.solved}
-                        clearance={clearance}
+                        clearance={accessClearance}
                         onChapter={visitChapter}
                       />
                       <section className="stats-grid">
@@ -612,7 +616,7 @@ function App() {
                       />
                       <FacilityRoute
                         solved={me.solved}
-                        clearance={clearance}
+                        clearance={accessClearance}
                         onChapter={visitChapter}
                       />
                       <div className="mission-legend">
@@ -646,7 +650,7 @@ function App() {
                             {catalog.challenges
                               .filter((c) => c.chapterId === ch.id)
                               .map((c) => {
-                                const locked = clearance < ch.requiredClearance,
+                                const locked = accessClearance < ch.requiredClearance,
                                   solved = me?.solved.includes(c.id);
                                 return (
                                   <button
@@ -819,6 +823,17 @@ function App() {
                       </section>
                     </>
                   )}
+                  {page === "admin" && isAdmin && (
+                    <>
+                      <PageTitle kicker="SITE-17 ADMINISTRATION" title="관리자 콘솔" description="모든 공개 임무·해설·기밀문서를 열람할 수 있습니다. 관리자 열람은 풀이 기록에 반영되지 않으며 랭킹에서 제외됩니다." />
+                      <section className="panel profile-docs">
+                        <h3>전체 조사 임무 · {catalog.challenges.length}</h3>
+                        {catalog.challenges.map(c => <button className="document-link" key={c.id} onClick={() => openChallenge(c)}><Shield size={16} />{num(c.id)} / {c.title}<ChevronRight size={16} /></button>)}
+                        <button className="secondary" onClick={() => go("documents")}>전체 기밀문서 열람</button>{" "}
+                        <button className="primary" onClick={() => setShowEnding(true)}>ACT I 엔딩 열람</button>
+                      </section>
+                    </>
+                  )}
                   {page === "profile" && (
                     <>
                       <PageTitle
@@ -882,7 +897,7 @@ function App() {
                                 첫 임무를 완료하면 조사 기록이 해금됩니다.
                               </p>
                             )}
-                            {me.completed && (
+                            {(me.completed || isAdmin) && (
                               <button
                                 className="primary"
                                 onClick={() => setShowEnding(true)}
@@ -1230,7 +1245,7 @@ function ChapterCard({
   onClick: () => void;
 }) {
   const done = ch.ids.filter((id) => me?.solved.includes(id)).length,
-    locked = (me?.clearance || 0) < ch.requiredClearance,
+    locked = (me?.accessClearance || 0) < ch.requiredClearance,
     status = locked
       ? "LOCKED"
       : done === ch.ids.length
@@ -1285,17 +1300,18 @@ function ChallengeView({
     [message, setMessage] = useState(""),
     [correct, setCorrect] = useState(false),
     [busy, setBusy] = useState(false);
+  const canReview = me.user.role === "admin" || me.solved.includes(c.id);
   const solved = me.solved.includes(c.id),
     previousHint = Math.max(
       0,
       ...me.hints.filter((h) => h.challengeId === c.id).map((h) => h.level),
     );
   useEffect(() => {
-    if (solved)
+    if (canReview)
       api<{ explanation: string }>(`/challenges/${c.id}/solution`)
         .then((b) => setSolution(b.explanation))
         .catch((e) => setMessage(e.message));
-  }, [c.id, solved]);
+  }, [c.id, canReview]);
   return (
     <div className="challenge-view">
       <button className="text-button back-button" onClick={back}>
@@ -1421,7 +1437,7 @@ function ChallengeView({
               </div>
             )}
           </section>
-          {solved && solution && (
+          {canReview && solution && (
             <section className="panel solution-panel">
               <span className="eyebrow green-text">
                 DEBRIEF / ACCESS GRANTED
