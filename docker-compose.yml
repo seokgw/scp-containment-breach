@@ -1,0 +1,31 @@
+name: scp-training
+services:
+  idor:
+    build: ./challenges/idor
+    ports: ["127.0.0.1:8080:8080"]
+    user: "1000:1000"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 128m
+    cpus: 0.25
+    pids_limit: 32
+    networks: [training]
+    restart: "no"
+  evidence:
+    build:
+      context: .
+      dockerfile: challenges/static/Dockerfile
+    ports: ["127.0.0.1:8081:8081"]
+    user: "1000:1000"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 128m
+    cpus: 0.25
+    pids_limit: 32
+    networks: [training]
+    restart: "no"
+networks:
+  training:
+    internal: true

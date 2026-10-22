@@ -1,0 +1,4 @@
+{
+  "imports": { "bcryptjs": "npm:bcryptjs@3.0.3" },
+  "compilerOptions": { "allowJs": true }
+}

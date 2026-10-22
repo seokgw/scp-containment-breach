@@ -1,0 +1,9 @@
+ALL TIMES KST (UTC+09:00)
+[CCTV]
+03:16:00 camera=173 state=ONLINE
+03:17:21 camera=173 state=OFFLINE reason=maintenance
+03:18:02 camera=173 state=NO_SIGNAL
+[ACCESS CONTROL]
+03:16:00 actor=guard command=OPEN_DOOR
+03:17:21 actor=warden command=DISABLE_CCTV
+03:17:34 actor=warden command=PURGE_CENTRAL_LOG
