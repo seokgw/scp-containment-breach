@@ -97,7 +97,7 @@ export function createHandler(
         if (
           !/^[a-z0-9_-]{3,24}$/.test(codename) ||
           typeof b.password !== "string" ||
-          b.password.length < 10 ||
+          b.password.length < (path === "/auth/register" ? 10 : 1) ||
           Buffer.byteLength(b.password) > 72
         )
           fail(

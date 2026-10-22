@@ -1042,7 +1042,7 @@ function App() {
                   name="password"
                   type="password"
                   required
-                  minLength={10}
+                  minLength={auth === "register" ? 10 : 1}
                   maxLength={72}
                   autoComplete={
                     auth === "register" ? "new-password" : "current-password"

@@ -134,7 +134,7 @@ export function Intro({
                 type="password"
                 autoComplete="current-password"
                 required
-                minLength={10}
+                minLength={1}
                 maxLength={72}
                 placeholder="비밀번호를 입력하세요"
                 disabled={busy}
